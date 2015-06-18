@@ -1,3 +1,21 @@
+
+# Project
+# =======
+build/*
+doc/*
+
+
+# Editors
+# =======
+
+# KDevelop
+.kdev4/
+*.kdev4
+
+
+# C++
+# ===
+
 # Compiled Object files
 *.slo
 *.lo
