@@ -8,10 +8,10 @@
 #include <vector>
 #include <experimental/optional>
 // DPL
-#include <dpl/environments/StateID.hpp>
-#include <dpl/environments/Cost.hpp>
-#include <dpl/planners/SearchID.hpp>
-#include <dpl/utils/log.hpp>
+#include <dpl/environments/StateID.hxx>
+#include <dpl/environments/Cost.hxx>
+#include <dpl/planners/SearchID.hxx>
+#include <dpl/utils/log.hxx>
 
 
 

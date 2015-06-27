@@ -9,8 +9,10 @@
 #include <iostream>
 #include <experimental/optional>
 // DPL
-#include <dpl/planners/Planner.hpp>
-#include <dpl/utils/types.hpp>
+#include <dpl/planners/Planner.hxx>
+#include <dpl/planners/AStar/AStarNode.hxx>
+#include <dpl/utils/types.hxx>
+#include <dpl/utils/WeakHeap.hxx>
 
 using std::cout;
 using std::endl;
@@ -32,7 +34,6 @@ void init(int argc, char* argv[]) {
 void test_showSolution(Maybe<Solution> ms) {
   if(ms) {
     Solution s = *ms;
-    log_inf << "aoeu";
     log_inf << s.cost;
     for(StateID state : s.path)
       cout << state;
@@ -68,9 +69,58 @@ void test_loopLogs(){
   }
 }
 
+void print(Maybe<AStarHeap::Element> e) {
+  if(e)
+    log_dst << "Top node: " << *e->node << " (" << e->key << ")";
+}
+
+void test_heap() {
+
+  AStarNode n1(0);
+  AStarNode n2(1);
+
+  AStarHeap heap;
+
+  AStarKey k1;
+  AStarKey k2;
+  k2[0]+= 20;
+  k2[1]=80;
+  heap.insert(n1, k1);
+  print(heap.peek());
+  heap.insert(n2, k2);
+  print(heap.peek());
+
+  auto a = heap._peek().node;
+
+  // Update node a (increase value)
+  k1[0]= k2[0].c()*2;
+  k1[1]= 2*k2[1];
+  heap.update(n1, k1);
+  print(heap.peek());
+
+  auto b = heap._peek().node;
+
+  if(a!=b)
+    log_dst << "Heap reordered elements";
+  if(b<a)
+    log_dst << "min heap";
+
+  log_dst << "Removing all objects";
+  while(true){
+    Maybe<AStarHeap::Element> e = heap.pop();
+    if(e)
+      print(e);
+    else
+      break;
+  }
+  log_dst << "--";
+}
+
 
 int main(int argc, char* argv[]) {
   init(argc, argv);
+
+  test_heap();
 
   Cost c(10);
   Cost i = Cost::infinity;
@@ -80,16 +130,16 @@ int main(int argc, char* argv[]) {
   c*=4;
 
 
-  cout << i << endl;
-  cout << c << endl;
-  cout << c+c << endl;
-  cout << c*c << endl;
+  log_inf << i;
+  log_inf << c;
+  log_inf << c+c;
+  log_inf << c*c;
 
-  cout << "ID: " << search << endl;
-  cout << "ID: " << ++search << endl;
-  cout << "ID: " << search++ << endl;
-  cout << "ID: " << search << endl;
-  cout << state << endl;
+  log_inf << "ID: " << search;
+  log_inf << "ID: " << ++search;
+  log_inf << "ID: " << search++;
+  log_inf << "ID: " << search;
+  log_inf << state;
 
   LOG(INFO) << "My first info log using default logger";
 

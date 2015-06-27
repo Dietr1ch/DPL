@@ -3,7 +3,7 @@
 // Includes
 // ========
 // DPL
-#include <dpl/environments/MDPState.hpp>
+#include <dpl/environments/MDPState.hxx>
 
 
 

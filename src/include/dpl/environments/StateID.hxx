@@ -17,12 +17,10 @@ class StateID {
 
 private:
   // Single member holding the identifier.
-  std::size_t id;
+  const std::size_t id;
 
 public:
-  StateID (std::size_t ID) {
-    id = ID;
-  }
+  StateID (std::size_t stateID) : id(stateID) { }
 
   /**
    * Cast to size_t

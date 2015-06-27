@@ -4,19 +4,13 @@
 // ========
 // DPL
 #include <dpl/planners/Node.hpp>
-#include <dpl/utils/Types.hpp>
-// Debugging
-#define DEBUG
-#ifdef DEBUG
-#include <iostream>
-using std::cerr;
-using std::endl;
-#endif
+#include <dpl/utils/log.hpp>
+#include <dpl/utils/types.hpp>
 
 
 
 
-struct PossibleOutcome{
+struct PossibleOutcome {
   StateID stateID;
   Cost cost;
   Probability chance;
@@ -43,7 +37,7 @@ class Outcomes {
       s+=o.chance;
 
     if(abs(s-1) > epsilon) {
-      cerr << "Probabilies sum is not close enough to 1" << endl;
+      err_env << "Probabilies sum is not close enough to 1" << endl;
     }
 #endif
   };
@@ -87,7 +81,7 @@ public:
   ~MDPAction() {
 #ifdef DEBUG
     if (node != nullptr) {
-      cerr << "ERROR: state deletion: planner specific data is not deleted\n";
+      err_env << "ERROR: state deletion: planner specific data is not deleted\n";
       throw new SBPL_Exception();
     }
 #endif

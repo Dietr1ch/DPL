@@ -5,7 +5,7 @@
 
 // SBPL Includes
 #include <dpl/planners/AStar/AStarSpace.hpp>
-#include <dpl/utils/queue.hpp>
+#include <dpl/utils/Queue.hxx>
 
 
 
@@ -16,7 +16,7 @@ AStarSpace::AStarSpace(DiscreteSpaceInformation *problemDSI) {
   MEM("Creating space with problem[%p]", (void*)problemDSI);
   assert(problemDSI);
 
-  open = new CHeap;
+  open = new WeakHeap;
   problem = problemDSI;
 
   backwardSearch = false;

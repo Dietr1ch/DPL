@@ -3,8 +3,8 @@
 // Includes
 // ========
 // DPL
-#include <dpl/utils/types.hpp>
-#include <dpl/planners/Node.hpp>
+#include <dpl/utils/types.hxx>
+#include <dpl/planners/Node.hxx>
 
 
 

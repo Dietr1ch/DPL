@@ -19,7 +19,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
 include_directories(src/include)
 
 #add_library(DPL SHARED
-  # src/utils/heap.cpp
+  # src/utils/heap.cxx
   #)
 
 set(DPL_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}/include")
@@ -45,11 +45,11 @@ install(FILES
 DESTINATION share/DPL/)
 
 install(DIRECTORY src/include/DPL DESTINATION include
-        FILES_MATCHING PATTERN "*.hpp")
+        FILES_MATCHING PATTERN "*.hxx")
 # install(TARGETS DPL
 #         LIBRARY DESTINATION lib)
 
-add_executable(benchmark src/benchmark.cpp)
+add_executable(benchmark src/benchmark.cxx)
 # target_link_libraries(benchmark DPL)
 
 # add_subdirectory(src/planners/AStar)

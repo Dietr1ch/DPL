@@ -7,7 +7,7 @@
 // C++
 #include <iostream>
 // DPL
-#include <dpl/utils/log.hpp>
+#include <dpl/utils/log.hxx>
 
 
 
