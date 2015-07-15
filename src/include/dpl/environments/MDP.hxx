@@ -3,30 +3,59 @@
 // Includes
 // ========
 // DPL
+#include <dpl/utils/log.hxx>
+#include <dpl/utils/types.hxx>
 #include <dpl/environments/MDPState.hxx>
 
 
 
 
+/**
+ * \brief A Markov Decision Process.
+ *
+ * \note Known as CMDP on the SBPL.
+ */
 class MDP {
 
 public:
   // Data
   // ----
-  vector<MDPState*> StateArray;
+  std::vector<MDPState*> stateArray;
 
   // Constructors
   // ------------
-  MDP() { }
-  ~MDP() { }
+  MDP() {}
+  ~MDP() {}
 
   //functions
-  bool empty();
-  bool full();
+  bool empty() const;
+  bool full() const;
 
   //creates numofstates states. Their ids are their orderings for Original, Thresholded & Search MDPs
-  bool Create(int numofstates);
+  bool create(int numofstates);
   bool Delete();
-  void Print(FILE* fOut);
-  MDPState* AddState(StateID stateID);
+  MDPState* addState(StateID stateID);
+
+  /**
+   * Output stream support.
+   */
+  friend std::ostream& operator <<(std::ostream& os, const MDP& mdp);
+  /**
+   * EasyLogging++ stream support.
+   */
+  virtual void log(OutStream& os) const {
+    err_env << "Logging not implomente";
+    _ignore(os);
+  }
+};
+
+
+/**
+ * (start, goal) pair
+ *
+ * \note Known as MDPConfig on the SBPL.
+ */
+struct MDPProblem {
+  StateID start;
+  StateID goal;
 };

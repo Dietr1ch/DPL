@@ -3,9 +3,9 @@
 // Includes
 // ========
 // DPL
-#include <dpl/planners/Node.hpp>
-#include <dpl/utils/log.hpp>
-#include <dpl/utils/types.hpp>
+#include <dpl/planners/Node.hxx>
+#include <dpl/utils/types.hxx>
+#include <dpl/utils/log.hxx>
 
 
 
@@ -15,13 +15,16 @@ struct PossibleOutcome {
   Cost cost;
   Probability chance;
 
-  static bool likelihood(const PossibleOutcome& l, const PossibleOutcome& r){
+  //PossibleOutcome(StateID state, Cost cost, Probability chance) : stateID(state),cost(cost),chance(chance) {}
+  //~PossibleOutcome() {}
+
+  static bool likelihood(const PossibleOutcome& l, const PossibleOutcome& r) {
     return l.chance < r.chance;
   }
 };
 
 class Outcomes {
-  vector<PossibleOutcome> outcomes;
+  std::vector<PossibleOutcome> outcomes;
 #ifdef DEBUG
   /**
    * Margin for the normalization
@@ -29,8 +32,8 @@ class Outcomes {
   static Probability epsilon = 0.00001;
 #endif
 
-  Outcomes(vector<PossibleOutcome> outcomes) {
-    this->outcomes = outcomes;
+public:
+  Outcomes(std::vector<PossibleOutcome> outcomes) : outcomes(outcomes) {
 #ifdef DEBUG
     Probability s = 0;
     for(PossibleOutcome o : outcomes)
@@ -41,24 +44,17 @@ class Outcomes {
     }
 #endif
   };
+  ~Outcomes() {}
 
   Maybe<PossibleOutcome> mostLikelyIndex() {
-    // return std::max_element(outcomes.begin(), outcomes.end(), PossibleOutcome::likelihood);
-    Maybe<PossibleOutcome> mostLikely = nullptr;
-    Probability max(0);
-    Probability s = 0;
-    for(PossibleOutcome o : outcomes)
-      if(o.chance > max) {
-        mostLikely = o;
-        max = o.chance;
-      }
-    return mostLikely;
+    Maybe<PossibleOutcome> ret;
+    if(outcomes.empty())
+      return ret;
+    return *std::max_element(outcomes.begin(), outcomes.end(), PossibleOutcome::likelihood);
   }
 };
 
-typedef vector<PossibleOutcome> Outcomes;
 typedef std::size_t PossibleOutcomeIndex;
-
 typedef int ActionID;
 
 class MDPAction {
@@ -66,36 +62,27 @@ public:
   // Data
   // ====
   // Source Node
-  StateID  sourceID;
-  std::unique_ptr<Node> node;
+  const StateID  source;
+  // std::unique_ptr<Node> node = nullptr;  // Review: is this necessary?
   // Action
-  ActionID actionID;
+  const ActionID actionID;
   Outcomes outcomes;
 
   // Constructor
-  MDPAction(ActionID a, StateID s) {
-    actionID = a;
-    sourceID = s;
-    node = nullptr;
-  }
-  ~MDPAction() {
-#ifdef DEBUG
-    if (node != nullptr) {
-      err_env << "ERROR: state deletion: planner specific data is not deleted\n";
-      throw new SBPL_Exception();
-    }
-#endif
-  }
+  MDPAction(StateID state, ActionID action, Outcomes o) : source(state),actionID(action),outcomes(o) {}
+
+  ~MDPAction() {}
 
 
   //functions
-  bool Delete();
-  bool IsValid();
+  bool isValid() const;
   void addOutcome(PossibleOutcome o);
-  int GetIndofMostLikelyOutcome();
-  int GetIndofOutcome(StateID OutcomeID);
-  bool DeleteAllOutcomes();
+  PossibleOutcomeIndex getIndexOfMostLikelyOutcome() const;
+  PossibleOutcomeIndex getIndexOfOutcome(const StateID outcome) const;
+  bool deleteAllOutcomes();
 
   //operators
-  void operator =(const CMDPACTION&);
+  bool operator ==(const MDPAction& a) const {
+    return actionID==a.actionID;
+  }
 };

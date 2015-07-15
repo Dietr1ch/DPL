@@ -5,9 +5,10 @@
 #include <iostream>
 #include <fstream>
 // DPL
-#include <dpl/environments/StateID.hxx>
 #include <dpl/environments/Cost.hxx>
-#include <dpl/utils/log.hpp>
+#include <dpl/environments/MDP.hxx>
+#include <dpl/environments/StateID.hxx>
+#include <dpl/utils/log.hxx>
 
 
 
@@ -16,17 +17,17 @@ class NodeStub {
 public:
   StateID id;
   Cost    cost;
-  NodeStub(StateID state, Cost c) {
-    id = state;
-    cost = c;
-  }
+
+  NodeStub(StateID state, Cost c) : id(state), cost(c) {}
 };
-typedef vector<NodeStub> Neigboorhood;
+typedef std::vector<NodeStub> Neigboorhood;
 
 
 struct StateChanges {
+  map<StateID, Neigboorhood> appeared;
   map<StateID, Neigboorhood> increased;
   map<StateID, Neigboorhood> decreased;
+  map<StateID, Neigboorhood> removed;
 };
 
 
@@ -41,8 +42,10 @@ struct StateChanges {
  * mapping from stateID to actual state variables (coordinates) using
  * StateID2IndexMapping array
  */
-class Environment {
+template <std::size_t StateArgumentCount=1>
+class DiscreteEnvironment {
 
+  typedef std::array<std::size_t, StateArgumentCount> StateArguments;
   /**
    * \brief mapping from hashentry stateID (used in environment to contain
    *        the coordinates of a state, say x,y or x,y,theta)
@@ -55,44 +58,40 @@ class Environment {
    * The value of -1 means that no search state has been created yet for this
    * hashentry
    */
-  vector<int*> StateID2IndexMapping;
-
-public:
+  std::vector<StateArguments> StateID2IndexMapping;
 
   // Initialization
   // ==============
-  /**
-   * \brief constructor
-   */
-  DiscreteEnvironment() = 0;
-  /**
-   * \brief initialization environment from file (see .cfg files for examples)
-   */
-  DiscreteEnvironment(const string envFilePath) = 0;
-  /**
-   * \brief initialization of MDP data structure
-   */
-  DiscreteEnvironment(MDPConfig& config) = 0;
+public:
+
+  DiscreteEnvironment() {}
 
   /**
    * Virtual destructor allows calling the derived class destructor.
    */
-  virtual ~DiscreteSpaceInformation() {
-    log_mem << "DiscreteSpaceInformation at " << (void*)this << " will be destroyed...";
-
-    for(auto mapping : StateID2IndexMapping)
-      if(mapping)
-        delete[] mapping;
-
-    log_mem << "DiscreteSpaceInformation at " << (void*)this << " was destroyed...";
+  virtual ~DiscreteEnvironment() {
+    log_mem << "DiscreteEnvironment at " << (void*)this << " will be destroyed...";
+    log_mem << "DiscreteEnvironment at " << (void*)this << " was destroyed...";
   }
+
 
   // Config
   // ------
   /**
+   * \brief initialization environment from file (see .cfg files for examples)
+   */
+  virtual bool loadFile(const std::string environmentFilePath) = 0;
+
+  /**
+   * \brief initialization of MDP data structure
+   */
+  virtual bool loadProblem(MDPProblem& problem) = 0;
+  /**
    * \brief sets a parameter to a value. The set of supported parameters depends on the particular environment
    */
-  virtual bool setParameter(const string parameter, int value) {
+  virtual bool setParameter(const std::string parameter, int value) {
+    _ignore(parameter);
+    _ignore(value);
     err_env << ("Environment has no parameters that can be set via SetEnvParameter function\n");
     return false;
   }
@@ -103,7 +102,7 @@ public:
   /**
    * \brief heuristic estimate from state FromStateID to state ToStateID
    */
-  virtual int heuristic(const StateID fromID, const StateID toID) = 0;
+  virtual Heuristic heuristic(const StateID fromID, const StateID toID) = 0;
 
   /**
    * \brief heuristic estimate from state with stateID to goal state
@@ -129,12 +128,12 @@ public:
 
   // Statistics
   // ==========
-  virtual bool stats_statesCreated(const StateID id) = 0;
+  virtual uint stats_statesCreated(const StateID id) = 0;
 
 
   // Print
   // =====
-  string toString(const StateID state) = 0;
+  virtual std::string toString(const StateID state) = 0;
 
 
   // Benchmarking
@@ -152,8 +151,10 @@ public:
    */
   virtual void modifyEnvironment(Seed seed, Percentage changes) {
     // TODO: this should take more parameters and return something?
+    _ignore(seed);
+    _ignore(changes);
     err_env << ("ERROR: modifyEnvironment is not implemented for this environment!\n");
-    throw new SBPL_Exception();
+    throw new exception();
   };
 
   /**
@@ -162,9 +163,11 @@ public:
    *
    * \return whether the goal state is reachable from the start
    */
-  virtual bool generateRandomProblem(MDPConfig *cfg, Seed seed, int maxTries) {
+  virtual Maybe<MDPProblem> generateRandomProblem(Seed seed, int maxTries) {
+    _ignore(seed);
+    _ignore(maxTries);
     err_env << ("ERROR: generateRandomProblem is not implemented for this environment!\n");
-    throw new SBPL_Exception();
+    throw new exception();
   };
 
   /**
@@ -173,9 +176,11 @@ public:
    *
    * \return whether the goal state is reachable from the start
    */
-  virtual bool generateRandomStart(MDPConfig *cfg, Seed seed, int maxTries) {
+  virtual Maybe<StateID> generateRandomStart(Seed seed, int maxTries) {
+    _ignore(seed);
+    _ignore(maxTries);
     err_env << ("ERROR: generateRandomProblem is not implemented for this environment!\n");
-    throw new SBPL_Exception();
+    throw new exception();
   };
   /**
    * \brief Generates a random goal cheking for feasibility.
@@ -183,40 +188,43 @@ public:
    *
    * \return whether the goal state is reachable from the start
    */
-  virtual bool generateRandomGoal(MDPConfig *cfg, Seed seed, int maxTries) {
+  virtual Maybe<StateID> generateRandomGoal(Seed seed, int maxTries) {
+    _ignore(seed);
+    _ignore(maxTries);
     err_env << ("ERROR: generateRandomProblem is not implemented for this environment!\n");
-    throw new SBPL_Exception();
+    throw new exception();
   };
 
 
   // Validation
   // ==========
   Maybe<Cost> checkArc(StateID source, StateID target) {
+    Maybe<Cost> c;
     auto neighs = getSuccessors(source);
 
     for(NodeStub n : neighs) {
       StateID s = n.id;
-      int c  = n.cost;
-
       if(s==target) {
         // This assumes that no 2 arc exists for any pair of nodes
+        c = n.cost;
         return c;
       }
     }
 
-    return nullptr;
+    return c;
   }
 
   Maybe<Cost> check(Path& path) {
+    Maybe<Cost> ret;
     Cost cost(0);
 
     if(!path.size()){
       err_env << ("Path is empty\n");
-      return false;
+      return ret;
     }
     if(!isGoal(path.back())){
       err_env << ("Last StateID is not a goal\n");
-      return nullptr;
+      return ret;
     }
 
     for(std::size_t i=0; i<path.size()-1; i++) {
@@ -231,14 +239,14 @@ public:
       Maybe<Cost> c = checkArc(s, t);
       if(!c) {
         err_env << "Path is not continuous. "
-                << "("
-                << s << ": " << toString(s)
-                << ")"
+                << "(" << s << ": " << toString(s) << ")"
                 << " -/-> "
-                << "("
-                << t << ": " << toString(t)
-                << ")" <<endl;
-        return nullptr;
+                << "(" << t << ": " << toString(t) << ")"
+                << endl;
+        return ret;
+      }
+      else {
+        cost += *c;
       }
     }
 

@@ -10,7 +10,7 @@
 #include <experimental/optional>
 // DPL
 #include <dpl/planners/Planner.hxx>
-#include <dpl/planners/AStar/AStarNode.hxx>
+#include <dpl/planners/AStar/AStarPlanner.hxx>
 #include <dpl/utils/types.hxx>
 #include <dpl/utils/WeakHeap.hxx>
 
@@ -26,8 +26,17 @@ void signalHandler(int s) {
   exit(1);
 }
 void init(int argc, char* argv[]) {
+#ifdef NDEBUG
+  cout << "Starting on Release Mode" << endl;
+#else
+  cout << "Starting on Debug Mode" << endl;
+#endif
   signal(SIGABRT, &signalHandler);
   START_EASYLOGGINGPP(argc, argv);
+
+  // REVIEW: Load config from files?
+  el::Loggers::addFlag(el::LoggingFlag::AutoSpacing);
+  el::Loggers::addFlag(el::LoggingFlag::ColoredTerminalOutput);
 }
 
 
@@ -69,20 +78,78 @@ void test_loopLogs(){
   }
 }
 
-void print(Maybe<AStarHeap::Element> e) {
+void print(Maybe<AStarNode<>::Open::Element> e) {
   if(e)
     log_dst << "Top node: " << *e->node << " (" << e->key << ")";
 }
 
+template <std::size_t StateArgumentCount=1>
+class FakeEnv : public DiscreteEnvironment<> {
+
+public:
+  FakeEnv() {}
+  ~FakeEnv() {}
+
+  bool loadFile(const std::string file) {
+    _ignore(file);
+    return false;
+  }
+  bool loadProblem(MDPProblem& p) {
+    _ignore(p);
+    return false;
+  }
+  Heuristic heuristic(const StateID fromID, const StateID toID) {
+    _ignore(fromID);
+    _ignore(toID);
+    return 0;
+  }
+  Heuristic goalHeuristic(const StateID state) {
+    _ignore(state);
+    return 0;
+  }
+  Heuristic startHeuristic(const StateID state) {
+    _ignore(state);
+    return 0;
+  }
+  Neigboorhood getSuccessors(const StateID source) {
+    _ignore(source);
+    Neigboorhood n;
+    return n;
+  }
+  Neigboorhood getPredecessors(const StateID target) {
+    _ignore(target);
+    Neigboorhood n;
+    return n;
+  }
+  bool isGoal(const StateID id) {
+    _ignore(id);
+    return false;
+  }
+  std::string toString(const StateID state) {
+    _ignore(state);
+    return "";
+  }
+  uint stats_statesCreated(const StateID id) {
+    _ignore(id);
+    return 0;
+  }
+  void generateRandomEnvironment(Seed seed) {
+    _ignore(seed);
+  }
+};
+
 void test_heap() {
 
-  AStarNode n1(0);
-  AStarNode n2(1);
+  FakeEnv<> env;
+  AStarSpace<> space(env);
 
-  AStarHeap heap;
+  AStarNode<> n1(0);
+  AStarNode<> n2(1);
 
-  AStarKey k1;
-  AStarKey k2;
+  AStarNode<>::Open heap;
+
+  AStarNode<>::Key k1;
+  AStarNode<>::Key k2;
   k2[0]+= 20;
   k2[1]=80;
   heap.insert(n1, k1);
@@ -107,7 +174,7 @@ void test_heap() {
 
   log_dst << "Removing all objects";
   while(true){
-    Maybe<AStarHeap::Element> e = heap.pop();
+    Maybe<AStarNode<>::Open::Element> e = heap.pop();
     if(e)
       print(e);
     else

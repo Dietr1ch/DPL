@@ -9,23 +9,27 @@
 
 
 
-template<typename keyType, int compareSize>
-class _AStarNode : public Node<keyType, compareSize> {
+template<typename keyType=Cost, KeySize keySize=1>
+class AStarNode : public Node<keyType, keySize> {
 
-  Cost _g;
+protected:
+  Cost      _g;
   Heuristic _h;
+
+  IndexType indexOpen = 0;
 
 
 public:
   /**
    * WeakHeap that this templated class may use
    */
-  typedef WeakHeap<_AStarNode<keyType, compareSize>, keyType, compareSize> WeakHeap;
-  typedef Key<keyType, compareSize> Key;
+  typedef WeakHeap<AStarNode<keyType, keySize>, &AStarNode::indexOpen, keyType, keySize> Open;
 
-  _AStarNode(StateID stateID) : Node<keyType, compareSize>(stateID) {
+  AStarNode(StateID stateID, Cost g=Cost::infinity, Heuristic h=0) : Node<keyType, keySize>(stateID) {
+    _g = g;
+    _h = h;
   }
-  virtual ~_AStarNode() {
+  virtual ~AStarNode() {
   }
 
   // Search
@@ -51,12 +55,3 @@ public:
   }
 
 };
-
-template<typename keyType>
-class _AStarNode<keyType, 1> : public Node<keyType, 1> {
-};
-
-// Default parameters
-typedef _AStarNode<Cost, 2> AStarNode;
-typedef AStarNode::WeakHeap AStarHeap;
-typedef AStarNode::Key AStarKey;

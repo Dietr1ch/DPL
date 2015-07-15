@@ -64,21 +64,21 @@ typedef int32_t CostNumericType;
 /**
  * A cost of a path (or an action).
  *
- * This class has only an INT with the number.
+ * This class has only an CostType with the number.
  * Provides an infinity value, and overflow detection support enables careless
  *   operation.
  */
-template<typename INT>
+template<typename CostType>
 class _Cost {
 
 public:
   /**
    * Value used to represent infinity
    */
-  static constexpr INT infinity = std::numeric_limits<INT>::max();
+  static constexpr CostType infinity = std::numeric_limits<CostType>::max();
 
 private:
-  INT C;
+  CostType C;
 
 public:
   /**
@@ -88,12 +88,12 @@ public:
   /**
    * Primary costructor
    */
-  _Cost(INT cost) : C(cost) {}
+  _Cost(CostType cost) : C(cost) {}
 
 
-  INT operator +(const _Cost& v) const {
+  CostType operator +(const _Cost& v) const {
 #if CAP_VALUES
-    INT r;
+    CostType r;
     if (__add_overflow(C, v.C, &r) || infty_check(r))
       return error_infinity(v);
     return r;
@@ -102,9 +102,9 @@ public:
 #endif
   }
 
-  INT operator +=(const _Cost& v) {
+  CostType operator +=(const _Cost& v) {
 #if CAP_VALUES
-    INT r;
+    CostType r;
     if (__add_overflow(C, v.C, &r) || infty_check(r))
       return C = error_infinity(v);
     return C = r;
@@ -114,9 +114,9 @@ public:
 #endif
   }
 
-  INT operator *(const _Cost& v) const {
+  CostType operator *(const _Cost& v) const {
 #if CAP_VALUES
-    INT r;
+    CostType r;
     if (__mul_overflow(C, v.C, &r) || infty_check(r))
       return error_infinity(v);
     return r;
@@ -125,9 +125,9 @@ public:
 #endif
   }
 
-  INT operator *=(const _Cost& v) {
+  CostType operator *=(const _Cost& v) {
 #if CAP_VALUES
-    INT r;
+    CostType r;
     if ( __mul_overflow(C, v.C, &r) || infty_check(r))
       return C = error_infinity(v);
     return C = r;
@@ -140,33 +140,41 @@ public:
 
   // Comparison
   // ==========
+  inline
   bool operator ==(const _Cost &cost) const {
     return C == cost.C;
   }
+  inline
   bool operator  >(const _Cost& cost) const {
     return C > cost.C;
   }
+  inline
   bool operator  <(const _Cost& cost) const {
     return C < cost.C;
   }
+  inline
   bool operator !=(const _Cost& cost) const {
     return C != cost.C;
   }
+  inline
   bool operator >=(const _Cost& cost) const {
     return C >= cost.C;
   }
+  inline
   bool operator <=(const _Cost& cost) const {
     return C <= cost.C;
   }
 
 
-  INT c() const {
+  inline
+  CostType c() const {
     return C;
   }
   /**
-   * Explicit cast to INT
+   * Explicit cast to CostType
    */
-  explicit operator INT() const {
+  inline
+  explicit operator CostType() const {
     return C;
   }
 
@@ -192,7 +200,7 @@ private:
    * Checks if value is infinity.
    */
   static inline
-  bool infty_check(INT n){
+  bool infty_check(CostType n){
 #if CAP_VALUES_SIMPLE
     _ignore(n);
     return false;
@@ -205,7 +213,7 @@ private:
    * Returns infinity. Logs on debugging.
    */
   inline
-  INT error_infinity(const _Cost& v) const {
+  CostType error_infinity(const _Cost& v) const {
 #if DEBUG_COST_OVERFLOW
 #if CAP_VALUES_SIMPLE
     log_alg << "Infinity passed! (Integer overflow: infinity<" << C << "+" << v.C << ")";
@@ -220,11 +228,11 @@ private:
 };
 
 
-template<typename INT>
-_Cost<INT> operator+(const INT& a, const _Cost<INT>& b) {return (_Cost<INT>)a + b;}
+template<typename CostType>
+_Cost<CostType> operator+(const CostType& a, const _Cost<CostType>& b) {return (_Cost<CostType>)a + b;}
 
-template<typename INT>
-_Cost<INT> operator*(const INT& a, const _Cost<INT>& b) {return (_Cost<INT>)a * b;}
+template<typename CostType>
+_Cost<CostType> operator*(const CostType& a, const _Cost<CostType>& b) {return (_Cost<CostType>)a * b;}
 
 
 // Aliases

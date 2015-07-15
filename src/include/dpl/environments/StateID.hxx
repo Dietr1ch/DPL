@@ -20,7 +20,7 @@ private:
   const std::size_t id;
 
 public:
-  StateID (std::size_t stateID) : id(stateID) { }
+  StateID (std::size_t stateID) : id(stateID) {}
 
   /**
    * Cast to size_t
@@ -34,6 +34,11 @@ public:
    */
   friend std::ostream& operator<< (std::ostream& os, const StateID& s) {
     return os << "StateID[" << s.id << "]";
+  }
+
+  inline
+  bool operator ==(const StateID &state) const {
+    return id == state.id;
   }
 };
 

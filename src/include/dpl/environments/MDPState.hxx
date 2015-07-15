@@ -2,11 +2,46 @@
 
 // Includes
 // ========
+#include <vector>
 // DPL
-#include <dpl/environments/StateID.hpp>
+#include <dpl/environments/MDPAction.hxx>
+#include <dpl/environments/StateID.hxx>
+#include <dpl/utils/log.hxx>
 
 
 
 
+/**
+ * \brief A MPD State.
+ *
+ * \note Known as CMDPSTATE on the SBPL.
+ */
 class MDPState {
+
+  const StateID id;
+  std::vector<MDPAction*> actions;
+  std::vector<StateID> predecessors;
+
+  void* plannerData;  // Should point to a Node
+
+  MDPState(StateID id) : id(id) {
+  }
+  ~MDPState() {
+    if(plannerData) {
+      err_env << "planner data was not deleted" << endl;
+      throw new exception();
+    }
+  }
+
+  //functions
+  bool Delete();
+  MDPAction* addAction(StateID id);
+  bool containsPred(StateID state);
+  bool addPred(StateID state);
+  bool removePred(StateID state);
+  bool removeAllActions();
+  MDPAction* getAction(ActionID action);
+
+  //operators
+  void operator =(const MDPState& rhsState);
 };

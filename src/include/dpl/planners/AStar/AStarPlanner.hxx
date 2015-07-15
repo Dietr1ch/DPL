@@ -4,16 +4,22 @@
 // C
 #include <ctime>
 // DPL
-#include <dpl/planners/Planner.hpp>
+#include <dpl/planners/Planner.hxx>
+#include <dpl/planners/AStar/AStarSpace.hxx>
 
 
 /**
  * A* Planner
  */
+template<typename keyType=Cost, KeySize keySize=1>
 class AStarPlanner : public Planner {
 
+  typedef AStarSpace<keyType, keySize> AStarSpace;
+  typedef AStarNode<keyType, keySize> AStarNode;
+  typedef void (*reachingFunction) (const AStarNode &node, const NodeStub &nS);
+
 protected:
-  AStarSpace *space;
+  std::unique_ptr<AStarSpace> space;
 
   // Configuration
   bool firstSolutionOnly;
@@ -33,7 +39,7 @@ protected:
 
 
 public:
-  AStarPlanner(DiscreteSpaceInformation *environment);
+  AStarPlanner(DiscreteEnvironment<> *environment);
   ~AStarPlanner();
 
 
@@ -42,29 +48,28 @@ protected:
   /** Expand Node forward
    * An expansion (forward) 'reaches' all the neighbors
    */
-  inline void updateSuccessors(ASTARNode &node);
+  inline void updateSuccessors(AStarNode &node);
 
   /** Reach Node forward
    * A (forward) 'reach' reviews if a Node can reach the Node specified by
    *   the neighborStub in a better way than before, recording the improvement
    *   (if any)
    */
-  inline void  reachSuccessor (ASTARNode &node, const NodeStub &nS);
+  inline void  reachSuccessor (AStarNode &node, const NodeStub &nS);
 
 
   // DPL API
   // ========
 
 public:
-  maybeSolution plan();
-  maybeSolution plan(Seconds givenTime);
+  Maybe<Solution> plan();
+  Maybe<Solution> plan(Seconds givenTime);
 
   int set_start(StateID startID);
   int set_goal(StateID goalID);
 
   int force_planning_from_scratch();
   int set_search_mode(bool bSearchUntilFirstSolution);
-  void costs_changed(StateChangeQuery const & stateChange);
+  void costs_changed(StateChanges const & stateChanges);
 };
 
-typedef void (*reachingFunction) (const ASTARNode &node, const NodeStub &nS);

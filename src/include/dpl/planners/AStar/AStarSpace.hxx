@@ -8,14 +8,11 @@ using namespace std;
 // C
 #include <ctime>
 // DPL
-#include <dpl/planners/Planner.hpp>
-#include <dpl/environments/MPD.hpp>
-// #include <dpl/utils/mdp.h>
-// #include <dpl/utils/mdpconfig.h>
-// #include <dpl/discrete_space_information/environment.h>
-// #include <dpl/utils/key.h>
-// #include <dpl/utils/heap.h>
-
+#include <dpl/planners/Planner.hxx>
+#include <dpl/planners/AStar/AStarNode.hxx>
+#include <dpl/planners/Space.hxx>
+#include <dpl/environments/Environment.hxx>
+#include <dpl/environments/MDP.hxx>
 
 
 // Configuration
@@ -27,18 +24,25 @@ using namespace std;
 
 
 /**
- * Adaptive A* Search Space
+ * \brief A* Search Space
  */
-class AStarSpace {
+template<typename keyType=Cost, KeySize keySize=1, std::size_t stateArgumentCount=1>
+class AStarSpace : public Space {
+
+  typedef AStarNode<keyType, keySize> AStarNode;
+  typedef Key<keyType, keySize> AStarKey;
+  typedef DiscreteEnvironment<stateArgumentCount> DiscreteEnvironment;
+  typedef typename AStarNode::Open Open;
+
 public:
   // Problem data
-  CMDP MDP;
-  DiscreteSpaceInformation *problem;
+  std::unique_ptr<MDP> mdp;
+  DiscreteEnvironment& environment;
 
   // Instance data
-  CMDPSTATE *startState;
-  CMDPSTATE *currentState;
-  CMDPSTATE *goalState;
+  MDPState *startState;
+  MDPState *currentState;
+  MDPState *goalState;
 
   // Iterative Planner information
   // -----------------------------
@@ -47,34 +51,26 @@ public:
   SearchID iteration;  // Search iteration identifier
 
   // Data
-  CHeap *open;
+  Open open;
 
   // Configuration
   bool backwardSearch;  // It should be on the planner, but eases heuristic calculation
-
-
-  /** Statistics */
-  struct{
-    /** Per-search-episode stuff */
-    struct{
-      /** Expansions made on this space */
-      vector<uint> expansions;
-      vector<uint> pathLength;
-    } perSearch;
-  } stats;
 
 
 
   // Object management
   // =================
 
-  AStarSpace(DiscreteSpaceInformation *problem);
-  ~AStarSpace();
+  AStarSpace(DiscreteEnvironment& environment) : environment(environment) {}
+  ~AStarSpace() {
+    log_mem << "AStarSpace at " << (void*)this << " will be destroyed...";
+    log_mem << "AStarSpace at " << (void*)this << " was destroyed...";
+  }
 
   /** Ensures Node values are updated up to this search iteration */
   inline void updateNode(AStarNode &node);
   /** Computes the heuristic value from a State to the goal State */
-  inline int computeHeuristic(const CMDPSTATE &origin);
+  inline int computeHeuristic(const MDPState &origin);
 
 
   // Configuration
@@ -92,9 +88,9 @@ public:
 
 
   /** UNSAFE: inserts a node in open, No questions asked */
-  void insertOpen_(AStarNode *node, CKey key);
+  void insertOpen_(AStarNode *node, AStarKey key);
   /** UNSAFE: updates a node in open, No questions asked */
-  void updateOpen_(AStarNode *node, CKey key);
+  void updateOpen_(AStarNode *node, AStarKey key);
 
   /** gets the best node on the open 'list' */
   AStarNode* popOpen();
@@ -116,7 +112,7 @@ public:
   AStarNode* getNode0(StateID id);
 
   /** Get an updated node */
-  AStarNode* getNode(CMDPSTATE *mdpState);
+  AStarNode* getNode(MDPState *mdpState);
 
   /** UNSAFE: Get an updated node */
   AStarNode* getNode_(StateID id);

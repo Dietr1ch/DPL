@@ -172,164 +172,164 @@ AStarPlanner::plan(Seconds givenTime) {
   return SBPL_OK;
 }
 
-  inline
-  void
-  AStarPlanner::updateSuccessors(AStarNode &node) {
-    assert(space);
-    assert(space->problem);
+inline
+void
+AStarPlanner::updateSuccessors(AStarNode &node) {
+  assert(space);
+  assert(space->problem);
 
-    StateID id = node.id();
+  StateID id = node.id();
 
-    // Get successors from environment
-    #if AStar_SAVE_NEIGHBOURS
-    if(!node.successors)
-      node.successors = space->problem->GetSuccs(id);
-    assert(node.successors);
-    #else
-    auto successors = space->problem->getSuccessors(id);
-    #endif
+  // Get successors from environment
+#if AStar_SAVE_NEIGHBOURS
+  if(!node.successors)
+    node.successors = space->problem->GetSuccs(id);
+  assert(node.successors);
+#else
+  auto successors = space->problem->getSuccessors(id);
+#endif
 
-    // Reach each node updating path&cost on improvements
-    #if AStar_SAVE_NEIGHBOURS
-    for(NodeStub nS : node.successors)
-      #else
-      for(NodeStub nS : successors)
-        #endif
-        reachSuccessor(node, nS);
+  // Reach each node updating path&cost on improvements
+#if AStar_SAVE_NEIGHBOURS
+  for(NodeStub nS : node.successors)
+#else
+  for(NodeStub nS : successors)
+#endif
+    reachSuccessor(node, nS);
+}
+
+
+inline
+void
+AStarPlanner::reachSuccessor(AStarNode &node, const NodeStub &nS) {
+  assert(nS.valid());
+
+  auto *neigh = space->getNode(nS.id);
+
+  // Reached from node and and action that costs nS.cost
+  auto newG = node.g(space->iteration) + nS.cost;
+  assert(newG>=0);
+
+  if (newG < neigh->g(space->iteration)) {          // A better path was found
+    // Use new path
+    neigh->_g = newG;  //Save new cost
+    neigh->bestPredecesor = node.MDPstate;
+
+    // Update this node on the open list
+    space->upsertOpen(neigh);
   }
+}
 
+inline
+void
+AStarPlanner::updatePredecessors(AStarNode &node) {
+  //TODO: Reuse updateSuccessors code. Find how to do it w/o performance hits
+  assert(space);
+  assert(space->problem);
 
-  inline
-  void
-  AStarPlanner::reachSuccessor(AStarNode &node, const NodeStub &nS) {
-    assert(nS.valid());
+  StateID id = node.id();
 
-    auto *neigh = space->getNode(nS.id);
+  // Get predecessors from environment
+#if AStar_SAVE_NEIGHBOURS
+  if(!node.predecessors)
+    node.predecessors = space->problem->GetPreds(id);
+  assert(node.predecessors);
+#else
+  auto predecessors = space->problem->getPredecessors(id);
+#endif
 
-    // Reached from node and and action that costs nS.cost
-    auto newG = node.g(space->iteration) + nS.cost;
-    assert(newG>=0);
+  // Reach each node updating path&cost on improvements
+#if AStar_SAVE_NEIGHBOURS
+  for(NodeStub nS : *node.predecessors)
+#else
+  for(NodeStub nS : predecessors)
+#endif
+    reachPredecessor(node, nS);
 
-    if (newG < neigh->g(space->iteration)) {          // A better path was found
-      // Use new path
-      neigh->_g = newG;  //Save new cost
-          neigh->bestPredecesor = node.MDPstate;
+  QUIT("%s", "Not yet implemented");
+}
 
-          // Update this node on the open list
-          space->upsertOpen(neigh);
-    }
-  }
-
-  inline
-  void
-  AStarPlanner::updatePredecessors(AStarNode &node) {
-    //TODO: Reuse updateSuccessors code. Find how to do it w/o performance hits
-    assert(space);
-    assert(space->problem);
-
-    StateID id = node.id();
-
-    // Get predecessors from environment
-    #if AStar_SAVE_NEIGHBOURS
-    if(!node.predecessors)
-      node.predecessors = space->problem->GetPreds(id);
-    assert(node.predecessors);
-    #else
-    auto predecessors = space->problem->getPredecessors(id);
-    #endif
-
-    // Reach each node updating path&cost on improvements
-    #if AStar_SAVE_NEIGHBOURS
-    for(NodeStub nS : *node.predecessors)
-      #else
-      for(NodeStub nS : predecessors)
-        #endif
-        reachPredecessor(node, nS);
-
-      QUIT("%s", "Not yet implemented");
-  }
-
-  inline
-  void
-  AStarPlanner::reachPredecessor(AStarNode &node, const NodeStub &nS) {
-    //TODO: reach predecessors
-    QUIT("%s", "Not yet implemented");
-  }
+inline
+void
+AStarPlanner::reachPredecessor(AStarNode &node, const NodeStub &nS) {
+  //TODO: reach predecessors
+  QUIT("%s", "Not yet implemented");
+}
 
 
 
 
 
-  // SBPL Planning API
-  // -----------------
-  int
-  AStarPlanner::replan(double givenSeconds, Path& path, int& cost) {
+// SBPL Planning API
+// -----------------
+int
+AStarPlanner::replan(double givenSeconds, Path& path, int& cost) {
 
-    assert(path.empty());
-
-
-    assert(space->openEmpty());
-    // Start timing
-    time.start = clock();
-
-    bool solutionFound;
-    solutionFound = Search(path, cost, firstSolutionOnly, true, givenSeconds);
-
-    // End timing
-    time.end = clock();
-    space->openClear();
-
-    auto elapsed = (double)(time.end-time.start) / (double)CLOCKS_PER_SEC;
-
-    if(solutionFound)
-      SBPL_TRACE("A* found a solution (on %.5fs/%.2fs)...",
-                 elapsed, givenSeconds);
-      else
-        SBPL_TRACE("A* failed to find a solution (on %.5fs/%.2fs)...",
-                   elapsed, givenSeconds);
-
-        return solutionFound;
-  }
-  int
-  AStarPlanner::replan(Path& path, ReplanParams params, int& cost) {
-    // TODO: replan with parameters (givenTime, repairTime, epsilon)
-    return SBPL_ERR;
-  }
+  assert(path.empty());
 
 
-  // SBPL Configuration API
-  // ----------------------
-  inline
-  int
-  AStarPlanner::set_start(StateID startID) {
-    space->setStart(startID);
-    return SBPL_OK;
-  }
-  inline
-  int
-  AStarPlanner::set_goal(StateID goalID) {
-    space->setGoal(goalID);
-    return SBPL_OK;
-  }
+  assert(space->openEmpty());
+  // Start timing
+  time.start = clock();
 
-  inline
-  int
-  AStarPlanner::set_search_mode(bool firstSolutionOnly) {
-    this->firstSolutionOnly = firstSolutionOnly;
-    return SBPL_OK;
-  }
-  inline
-  int
-  AStarPlanner::force_planning_from_scratch() {
-    // TODO: Drop search efforts
-    return SBPL_OK;
-  }
+  bool solutionFound;
+  solutionFound = Search(path, cost, firstSolutionOnly, true, givenSeconds);
+
+  // End timing
+  time.end = clock();
+  space->openClear();
+
+  auto elapsed = (double)(time.end-time.start) / (double)CLOCKS_PER_SEC;
+
+  if(solutionFound)
+    SBPL_TRACE("A* found a solution (on %.5fs/%.2fs)...",
+               elapsed, givenSeconds);
+  else
+    SBPL_TRACE("A* failed to find a solution (on %.5fs/%.2fs)...",
+               elapsed, givenSeconds);
+
+  return solutionFound;
+}
+int
+AStarPlanner::replan(Path& path, ReplanParams params, int& cost) {
+  // TODO: replan with parameters (givenTime, repairTime, epsilon)
+  return SBPL_ERR;
+}
 
 
-  // SBPL Update API
-  // ---------------
-  inline
-  void
-  AStarPlanner::costs_changed(StateChangeQuery const & stateChange) {
-    // TODO: update costs
-  }
+// SBPL Configuration API
+// ----------------------
+inline
+int
+AStarPlanner::set_start(StateID startID) {
+  space->setStart(startID);
+  return SBPL_OK;
+}
+inline
+int
+AStarPlanner::set_goal(StateID goalID) {
+  space->setGoal(goalID);
+  return SBPL_OK;
+}
+
+inline
+int
+AStarPlanner::set_search_mode(bool firstSolutionOnly) {
+  this->firstSolutionOnly = firstSolutionOnly;
+  return SBPL_OK;
+}
+inline
+int
+AStarPlanner::force_planning_from_scratch() {
+  // TODO: Drop search efforts
+  return SBPL_OK;
+}
+
+
+// SBPL Update API
+// ---------------
+inline
+void
+AStarPlanner::costs_changed(StateChangeQuery const & stateChange) {
+  // TODO: update costs
+}

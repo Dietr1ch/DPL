@@ -14,16 +14,19 @@
 
 
 
+typedef std::size_t IndexType;
 
 /**
- * A WeakHeap that operates on Nodes<KeyType, compareSize>
+ * A WeakHeap that operates on Nodes<KeyType, keySize>
  */
-template<typename NodeType, typename K, int compareSize>
+template<typename NodeType, IndexType (NodeType::*index), typename KeyType, int keySize=1>
 class WeakHeap {
+
   /**
    * Ensure that templating matches the expected types
    */
-  static_assert(std::is_base_of<Node<K, compareSize>, NodeType>::value, "NodeType must derive from Node<K,n>");
+  static_assert(std::is_base_of<Node<KeyType, keySize>, NodeType>::value, "NodeType must derive from Node<K,n>");
+  typedef Key<KeyType, keySize> Key;
 
 public:
   /**
@@ -32,14 +35,21 @@ public:
    */
   struct Element {
     NodeType *node;
-    Key<K, compareSize> key;
+    Key key;
 
     Element() : node(nullptr) {}
     Element(NodeType *n) : node(n) {}
   };
 
 private:
-  Element* heap;
+  /**
+   * 'Array' holding the data for the heap.
+   *
+   * \note Standard vector implementation has the same behaviour as the
+   *         manually managed Element[] array that was used on the SBPL
+   *       It doubles the allocated memory when the capacity limit was reached.
+   */
+  vector<Element> heap;
 
   /**
    * Tracks heap usage
@@ -58,13 +68,10 @@ private:
   } stats;
 
 public:
-  WeakHeap(size_t startingSize = HEAP_SIZE_INIT) {
-    allocated = startingSize;
-    heap = new Element[startingSize];
+  WeakHeap(std::size_t startingSize = HEAP_SIZE_INIT) {
+    heap.reserve(startingSize);
   }
   ~WeakHeap() {
-    clear();
-    delete[] heap;
   }
 
 
@@ -108,11 +115,10 @@ public:
   /**
    * Inserts a node into the heap
    */
-  void insert(NodeType &n, const Key<K, compareSize> k) {
+  void insert(NodeType &n, const Key k) {
     Element e;
-    sizecheck();
 
-    if (n.heapIndex != 0) {
+    if (n.*index != 0) {
       err_dst << "Node is already in heap\n";
       throw new std::exception();
     }
@@ -125,19 +131,19 @@ public:
   /**
    * Unsafe insert
    */
-  void _insert(const NodeType &n, const Key<K, compareSize> k);
+  void _insert(const NodeType &n, const Key k);
 
   /**
    * Removes and return a node
    */
   Maybe<Element> remove(NodeType &n) {
-    if (n.heapIndex == 0) {
+    if (n.index == 0) {
       err_dst << "Node is not in heap";
       throw new std::exception();
     }
 
-    percolate(n.heapIndex, heap[size--]);
-    n.heapIndex = 0;
+    percolate(n.index, heap[size--]);
+    n.*index = 0;
   }
 
   /**
@@ -148,8 +154,8 @@ public:
   /**
    * Updates a node
    */
-  void update(NodeType &n, const Key<K, compareSize> newKey) {
-    size_t i = n.heapIndex;
+  void update(NodeType &n, const Key newKey) {
+    size_t i = n.*index;
     if (i==0) {
       err_dst << "Node is not in heap";
       throw new std::exception();
@@ -165,18 +171,18 @@ public:
   /**
    * Unsafe update
    */
-  void _update(NodeType &n, const Key<K, compareSize> newKey);
+  void _update(NodeType &n, const Key newKey);
   /**
    * Inserts or updates a node
    */
-  void upsert(NodeType &n, const Key<K, compareSize> newKey);
+  void upsert(NodeType &n, const Key newKey);
 
   /**
    * Removes all elements from the heap
    */
   void clear() {
     for (int i = 1; i<=size; ++i)
-      heap[i].node->heapIndex = 0;  // Invalidates Node*
+      heap[i].node->*index = 0;  // Invalidates Node*
     size = 0;
   }
 
@@ -199,7 +205,7 @@ public:
    * Checks if a node is in the heap
    */
   bool contains(NodeType &n) {
-    return n.heapIndex!=0;
+    return n.index!=0;
   }
 
 
@@ -211,10 +217,10 @@ private:
     for (; hole > 1 && e.key < heap[hole / 2].key; hole /= 2) {
       stats.percolates++;
       heap[hole] = heap[hole / 2];
-      heap[hole].node->heapIndex = hole;
+      heap[hole].node->*index = hole;
     }
     heap[hole] = e;
-    heap[hole].node->heapIndex = hole;
+    heap[hole].node->*index = hole;
   }
 
   void percolateDown(int hole, Element e) {
@@ -230,13 +236,13 @@ private:
       if (heap[child].key < e.key) {
         stats.percolates++;
         heap[hole] = heap[child];
-        heap[hole].node->heapIndex = hole;
+        heap[hole].node->*index = hole;
       }
       else
         break;
     }
     heap[hole] = e;
-    heap[hole].node->heapIndex = hole;
+    heap[hole].node->*index = hole;
   }
 
   void percolate(int hole, Element e) {
@@ -247,34 +253,5 @@ private:
       percolateUp(hole, e);
     else
       percolateDown(hole, e);
-  }
-
-  void grow() {
-    allocated*=2;
-
-    if (allocated > HEAP_SIZE_MAX)
-      allocated = HEAP_SIZE_MAX;
-
-    Element *newHeap = new Element[allocated];
-
-    // TODO: use memcpy
-    for(int i=0; i<=size; i++)
-      newHeap[i] = heap[i];
-
-    delete[] heap;
-    heap = newHeap;
-  }
-
-  void sizecheck() {
-
-    if(full()) {
-      err_mem << "WeakHeap is full\n";
-    }
-    else {
-      if (size == allocated-1) {
-        grow();
-      }
-    }
-
   }
 };
