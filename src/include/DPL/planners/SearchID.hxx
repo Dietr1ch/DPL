@@ -4,10 +4,8 @@
 // ========
 // C
 #include <cstdint>
-// C++
-#include <iostream>
 // DPL
-#include <dpl/utils/log.hxx>
+#include <DPL/utils/log.hxx>
 
 
 

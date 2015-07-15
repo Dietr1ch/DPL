@@ -7,7 +7,7 @@
 // C++
 #include <limits>
 // DPL
-#include <dpl/utils/log.hxx>
+#include <DPL/utils/log.hxx>
 
 
 // Config
@@ -189,7 +189,7 @@ public:
   /**
    * EasyLogging++ stream support
    */
-  virtual void log(OutStream& os) const {
+  void log(OutStream& os) const {
     if(C < _Cost::infinity)
       os << C;
     os << "infty";
@@ -229,10 +229,14 @@ private:
 
 
 template<typename CostType>
-_Cost<CostType> operator+(const CostType& a, const _Cost<CostType>& b) {return (_Cost<CostType>)a + b;}
+_Cost<CostType> operator+(const CostType& a, const _Cost<CostType>& b) {
+  return (_Cost<CostType>)a + b;
+}
 
 template<typename CostType>
-_Cost<CostType> operator*(const CostType& a, const _Cost<CostType>& b) {return (_Cost<CostType>)a * b;}
+_Cost<CostType> operator*(const CostType& a, const _Cost<CostType>& b) {
+  return (_Cost<CostType>)a * b;
+}
 
 
 // Aliases

@@ -8,11 +8,9 @@ using namespace std;
 // C
 #include <ctime>
 // DPL
-#include <dpl/planners/Planner.hxx>
-#include <dpl/planners/AStar/AStarNode.hxx>
-#include <dpl/planners/Space.hxx>
-#include <dpl/environments/Environment.hxx>
-#include <dpl/environments/MDP.hxx>
+#include <DPL/planners/AStar/AStarNode.hxx>
+#include <DPL/planners/Space.hxx>
+#include <DPL/environments/Environment.hxx>
 
 
 // Configuration
@@ -25,12 +23,20 @@ using namespace std;
 
 /**
  * \brief A* Search Space
+ *
+ * \param KeyType:  Type to use for comparisons.
+ * \param keySize:  Number of comparisons ('1+tie breaks').
+ * \param stateArgumentCount:  Number of arguments that States have (2D grid -> 2).
  */
-template<typename keyType=Cost, KeySize keySize=1, std::size_t stateArgumentCount=1>
+template<
+  typename    KeyType=Cost,
+  KeySize     keySize=1,
+  std::size_t stateArgumentCount=1
+  >
 class AStarSpace : public Space {
 
-  typedef AStarNode<keyType, keySize> AStarNode;
-  typedef Key<keyType, keySize> AStarKey;
+  typedef AStarNode<KeyType, keySize> AStarNode;
+  typedef Key<KeyType, keySize> AStarKey;
   typedef DiscreteEnvironment<stateArgumentCount> DiscreteEnvironment;
   typedef typename AStarNode::Open Open;
 

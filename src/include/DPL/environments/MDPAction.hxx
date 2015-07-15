@@ -3,13 +3,14 @@
 // Includes
 // ========
 // DPL
-#include <dpl/planners/Node.hxx>
-#include <dpl/utils/types.hxx>
-#include <dpl/utils/log.hxx>
+#include <DPL/planners/Node.hxx>
+#include <DPL/utils/types.hxx>
 
 
 
-
+/**
+ * \brief A Possible Outcome of executing some MDPAction.
+ */
 struct PossibleOutcome {
   StateID stateID;
   Cost cost;
@@ -23,8 +24,12 @@ struct PossibleOutcome {
   }
 };
 
+/**
+ * \brief The set of possible outcomes for some MDPAction.
+ */
 class Outcomes {
   std::vector<PossibleOutcome> outcomes;
+
 #ifdef DEBUG
   /**
    * Margin for the normalization
@@ -57,6 +62,13 @@ public:
 typedef std::size_t PossibleOutcomeIndex;
 typedef int ActionID;
 
+/**
+ * \brief A MDP Action.
+ *
+ * Actions on MDPs have a distribution of effects, modeled with Outcomes.
+ *
+ * \note Known as CMDP on the SBPL.
+ */
 class MDPAction {
 public:
   // Data

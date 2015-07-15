@@ -1,3 +1,4 @@
+#define DPL DPL
 
 // Includes
 // ========
@@ -5,14 +6,8 @@
 #include <cstdlib>
 #include <cstdio>
 #include <csignal>
-// C++
-#include <iostream>
-#include <experimental/optional>
 // DPL
-#include <dpl/planners/Planner.hxx>
-#include <dpl/planners/AStar/AStarPlanner.hxx>
-#include <dpl/utils/types.hxx>
-#include <dpl/utils/WeakHeap.hxx>
+#include <DPL/planners/AStar/AStarPlanner.hxx>
 
 using std::cout;
 using std::endl;
@@ -83,7 +78,9 @@ void print(Maybe<AStarNode<>::Open::Element> e) {
     log_dst << "Top node: " << *e->node << " (" << e->key << ")";
 }
 
-template <std::size_t StateArgumentCount=1>
+/**
+ *
+ */
 class FakeEnv : public DiscreteEnvironment<> {
 
 public:
@@ -140,7 +137,7 @@ public:
 
 void test_heap() {
 
-  FakeEnv<> env;
+  FakeEnv env;
   AStarSpace<> space(env);
 
   AStarNode<> n1(0);

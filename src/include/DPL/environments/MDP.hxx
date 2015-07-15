@@ -3,9 +3,7 @@
 // Includes
 // ========
 // DPL
-#include <dpl/utils/log.hxx>
-#include <dpl/utils/types.hxx>
-#include <dpl/environments/MDPState.hxx>
+#include <DPL/environments/MDPState.hxx>
 
 
 
@@ -25,7 +23,7 @@ public:
   // Constructors
   // ------------
   MDP() {}
-  ~MDP() {}
+  virtual ~MDP() {}
 
   //functions
   bool empty() const;
@@ -44,7 +42,7 @@ public:
    * EasyLogging++ stream support.
    */
   virtual void log(OutStream& os) const {
-    err_env << "Logging not implomente";
+    err_env << "Logging not implomented";
     _ignore(os);
   }
 };

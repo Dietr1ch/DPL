@@ -2,13 +2,15 @@
 
 // Includes
 // ========
-// STL
-#include <vector>
 // DPL
-#include <dpl/utils/types.hxx>
+#include <DPL/utils/types.hxx>
 
 
 
+
+/**
+ * \brief A Search Space.
+ */
 class Space {
 
   //StateID start;

@@ -3,16 +3,19 @@
 // Includes
 // ========
 // DPL
-#include <dpl/utils/types.hxx>
-#include <dpl/planners/Node.hxx>
+#include <DPL/utils/types.hxx>
+#include <DPL/planners/Node.hxx>
 
 
 
 
 /**
- * DPL Planner interface
+ * \brief DPL Planner interface
  */
 class Planner {
+
+  virtual ~Planner() {}
+
 
   // Setup
   // =====

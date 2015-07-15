@@ -2,17 +2,14 @@
 
 // Includes
 // ========
-#include <vector>
 // DPL
-#include <dpl/environments/MDPAction.hxx>
-#include <dpl/environments/StateID.hxx>
-#include <dpl/utils/log.hxx>
+#include <DPL/environments/MDPAction.hxx>
 
 
 
 
 /**
- * \brief A MPD State.
+ * \brief A MDP State.
  *
  * \note Known as CMDPSTATE on the SBPL.
  */

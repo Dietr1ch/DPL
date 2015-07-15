@@ -2,17 +2,19 @@
 
 // Includes
 // ========
-#include <iostream>
 #include <fstream>
 // DPL
-#include <dpl/environments/Cost.hxx>
-#include <dpl/environments/MDP.hxx>
-#include <dpl/environments/StateID.hxx>
-#include <dpl/utils/log.hxx>
+#include <DPL/environments/MDP.hxx>
 
 
 
 
+/**
+ * \brief An action for Deterministic Environments.
+ *
+ * REVIEW: Should planners use a vector<Outcomes>?
+ *         Changing this may break compability with the SBPL!.
+ */
 class NodeStub {
 public:
   StateID id;
@@ -23,6 +25,17 @@ public:
 typedef std::vector<NodeStub> Neigboorhood;
 
 
+/**
+ * \brief Changes that occurred on the Environment.
+ *
+ * A set of lists describing the changes ocurred on each State
+ *
+ * REVIEW: Occlusion may be wanted, as probably not all changes
+ *           can be observed by the agent. Probably this will
+ *           work fine for a single update, but multiple updates
+ *           will require tracking what the agent knew (or
+ *           merging the distinct types of changes).
+ */
 struct StateChanges {
   map<StateID, Neigboorhood> appeared;
   map<StateID, Neigboorhood> increased;
@@ -41,8 +54,12 @@ struct StateChanges {
  * the actual state variables.  Environment, on the * other hand, maintains a
  * mapping from stateID to actual state variables (coordinates) using
  * StateID2IndexMapping array
+ *
+ * \param StateArgumentCount: State arity for the problem.
  */
-template <std::size_t StateArgumentCount=1>
+template <
+  std::size_t StateArgumentCount=1
+  >
 class DiscreteEnvironment {
 
   typedef std::array<std::size_t, StateArgumentCount> StateArguments;

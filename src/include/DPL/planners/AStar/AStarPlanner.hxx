@@ -1,15 +1,15 @@
 #pragma once
 
 // Includes
-// C
-#include <ctime>
+// ========
 // DPL
-#include <dpl/planners/Planner.hxx>
-#include <dpl/planners/AStar/AStarSpace.hxx>
+#include <DPL/planners/AStar/AStarSpace.hxx>
+
+
 
 
 /**
- * A* Planner
+ * \brief A* Planner
  */
 template<typename keyType=Cost, KeySize keySize=1>
 class AStarPlanner : public Planner {
@@ -45,13 +45,17 @@ public:
 
 protected:
 
-  /** Expand Node forward
+  /**
+   * \brief Expand a node forward.
+   *
    * An expansion (forward) 'reaches' all the neighbors
    */
   inline void updateSuccessors(AStarNode &node);
 
-  /** Reach Node forward
-   * A (forward) 'reach' reviews if a Node can reach the Node specified by
+  /**
+   * \brief Reach Node forward recording the improvement.
+   *
+   * A (forward) 'reach' checks if a Node can reach the Node specified by
    *   the neighborStub in a better way than before, recording the improvement
    *   (if any)
    */

@@ -13,13 +13,21 @@ typedef int KeySize;
 
 /**
  * Multi-level comparator
+ *
+ * \param KeyType: Type to use for comparisons
+ * \param keySize: Number of comparisons ('1+tie breaks')
  */
-template<typename KeyType, KeySize keySize>
+template<
+  typename KeyType,
+  KeySize  keySize
+  >
 class Key {
   bool changed = true;
   KeyType key[keySize] = {0};
 
 public:
+
+  virtual ~Key() {}
 
   // Comparison
   // ==========

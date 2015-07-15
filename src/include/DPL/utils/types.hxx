@@ -2,16 +2,13 @@
 
 // Includes
 // ========
-// C
-#include <cstdint>
 // Standard Library
 #include <vector>
 #include <experimental/optional>
 // DPL
-#include <dpl/environments/StateID.hxx>
-#include <dpl/environments/Cost.hxx>
-#include <dpl/planners/SearchID.hxx>
-#include <dpl/utils/log.hxx>
+#include <DPL/environments/StateID.hxx>
+#include <DPL/environments/Cost.hxx>
+#include <DPL/planners/SearchID.hxx>
 
 
 

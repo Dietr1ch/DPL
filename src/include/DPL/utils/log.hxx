@@ -73,5 +73,7 @@ el::Logger* logger_mem = el::Loggers::getLogger(str_mem);
  *
  * This overhead should be optimized away.
  */
-template <typename T>
+template <
+  typename T
+  >
 void _ignore(T &&) {}
