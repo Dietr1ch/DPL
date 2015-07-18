@@ -10,6 +10,9 @@
 #include <DPL/utils/log.hxx>
 
 
+
+namespace dpl {
+
 // Config
 // ======
 
@@ -62,14 +65,14 @@ typedef int32_t CostNumericType;
 
 
 /**
- * A cost of a path (or an action).
+ * \brief Cost of a path (or an action).
  *
  * This class has only an CostType with the number.
  * Provides an infinity value, and overflow detection support enables careless
  *   operation.
  */
 template<
-  typename CostType
+  typename CostType=CostNumericType
 >
 class _Cost {
 
@@ -244,16 +247,18 @@ _Cost<CostType> operator*(const CostType& a, const _Cost<CostType>& b) {
 // Aliases
 // =======
 /**
- * Cost of a path
+ * Cost of a path or an action.
  */
-typedef _Cost<CostNumericType> Cost;
+typedef _Cost<> Cost;
 
 /**
- * Estimated cost of a path
+ * Estimated cost of a path.
  */
 typedef Cost Heuristic;
 
 /**
- * Weight to focus the search
+ * Weight to focus the search.
  */
 typedef Cost Weight;
+
+}

@@ -10,6 +10,8 @@
 
 
 
+namespace dpl {
+
 /**
  * \brief base class for a search node.
  *
@@ -67,3 +69,5 @@ public:
     os << "Node[" << id << "]";
   }
 };
+
+}

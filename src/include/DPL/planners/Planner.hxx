@@ -9,6 +9,8 @@
 
 
 
+namespace dpl {
+
 /**
  * \brief DPL Planner interface
  */
@@ -43,3 +45,5 @@ class Planner {
   Maybe<Solution> plan(Seconds timeGiven);
 
 };
+
+}

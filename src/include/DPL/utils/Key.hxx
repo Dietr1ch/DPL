@@ -10,6 +10,8 @@
 
 
 
+namespace dpl {
+
 typedef int KeySize;
 
 
@@ -95,3 +97,5 @@ public:
       os << ", " << key[i];
   }
 };
+
+}

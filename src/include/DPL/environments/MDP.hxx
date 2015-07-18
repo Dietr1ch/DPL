@@ -8,6 +8,8 @@
 
 
 
+namespace dpl {
+
 /**
  * \brief A Markov Decision Process.
  *
@@ -49,7 +51,9 @@ public:
 
 
 /**
- * (start, goal) pair
+ * \brief MDP Problem definition for some environment, a (start, goal) pair.
+ *
+ * REVIEW: The goal may not be unique.
  *
  * \note Known as MDPConfig on the SBPL.
  */
@@ -57,3 +61,5 @@ struct MDPProblem {
   StateID start;
   StateID goal;
 };
+
+}

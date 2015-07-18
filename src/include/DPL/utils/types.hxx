@@ -13,6 +13,8 @@
 
 
 
+namespace dpl {
+
 // Solution
 // ========
 
@@ -50,3 +52,5 @@ template<
   typename T
 >
 using Maybe = std::experimental::optional<T>;
+
+}

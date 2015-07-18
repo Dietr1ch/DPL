@@ -8,6 +8,8 @@
 
 
 
+namespace dpl {
+
 /**
  * \brief A MDP State.
  *
@@ -42,3 +44,5 @@ class MDPState {
   //operators
   void operator =(const MDPState& rhsState);
 };
+
+}

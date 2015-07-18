@@ -8,14 +8,17 @@
 #include <easylogging++.h>
 
 
+// Initialize Easy logging++
+INITIALIZE_EASYLOGGINGPP
 
+
+
+
+namespace dpl {
 
 using std::endl;
 typedef el::base::type::ostream_t OutStream;
 
-
-// Initialize Easy logging++
-INITIALIZE_EASYLOGGINGPP
 
 // #define str_alg "alg"
 // #define str_dst "dst"
@@ -84,4 +87,6 @@ template <
 void _ignore(T &&) {
   dbg_inf << "Review ignoring";
   el::base::debug::StackTrace();
+}
+
 }

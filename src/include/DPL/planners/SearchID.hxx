@@ -10,6 +10,8 @@
 
 
 
+namespace dpl {
+
 /**
  * \brief Search iteration identifier
  *
@@ -95,3 +97,5 @@ public:
 };
 
 typedef _SearchID<uint32_t> SearchID;
+
+}

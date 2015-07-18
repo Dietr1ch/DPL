@@ -8,6 +8,8 @@
 
 
 
+namespace dpl {
+
 typedef std::size_t IndexType;
 
 /**
@@ -72,3 +74,5 @@ public:
 
   virtual void remove(NodeType &n) = 0;
 };
+
+}

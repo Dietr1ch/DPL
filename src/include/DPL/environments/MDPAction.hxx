@@ -9,6 +9,8 @@
 
 
 
+namespace dpl {
+
 /**
  * \brief A Possible Outcome of executing some MDPAction.
  */
@@ -105,3 +107,5 @@ public:
     return actionID==a.actionID;
   }
 };
+
+}

@@ -9,6 +9,8 @@
 
 
 
+namespace dpl {
+
 /**
  * \brief An action for Deterministic Environments.
  *
@@ -294,3 +296,5 @@ public:
   }
 
 };
+
+}

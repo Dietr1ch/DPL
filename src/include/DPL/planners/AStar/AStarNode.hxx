@@ -9,6 +9,8 @@
 
 
 
+namespace dpl {
+
 /**
  * \brief A* Search Node.
  */
@@ -21,6 +23,7 @@ class AStarNode : public Node<KeyType, keySize> {
 protected:
   Cost      _g;
   Heuristic _h;
+
 
 public:
   IndexType indexOpen = 0;
@@ -62,3 +65,5 @@ public:
   }
 
 };
+
+}

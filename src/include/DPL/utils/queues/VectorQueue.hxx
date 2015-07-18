@@ -8,6 +8,8 @@
 
 
 
+namespace dpl {
+
 /**
  * A Queue that operates on Nodes<KeyType, keySize> implemented over a vector<Element>
  *
@@ -327,3 +329,5 @@ private:
       percolateDown(hole, e);
   }
 };
+
+}

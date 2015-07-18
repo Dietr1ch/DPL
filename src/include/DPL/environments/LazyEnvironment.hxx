@@ -8,6 +8,8 @@
 
 
 
+namespace dpl {
+
 class LazyNodeStub : public NodeStub {
 public:
   bool isTrueCost;  /** Whether the cost is the actual cost or a quick lower bound **/
@@ -28,3 +30,5 @@ class LazyEnvironment : DiscreteEnvironment<StateArgumentCount> {
   virtual LazyNeigboorhood getLazySuccessors(StateID sourceState) = 0;
   virtual LazyNeigboorhood getLazyPredecessors(StateID targetState) = 0;
 };
+
+}

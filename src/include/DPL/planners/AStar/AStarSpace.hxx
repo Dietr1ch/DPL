@@ -22,6 +22,8 @@ using namespace std;
 
 
 
+namespace dpl {
+
 /**
  * \brief A* Search Space
  *
@@ -35,7 +37,7 @@ template<
   KeySize     keySize=1,
   std::size_t stateArgumentCount=1,
   typename    OpenType=VectorQueue<AStarNode<KeyType,keySize>, &AStarNode<KeyType,keySize>::indexOpen, KeyType, keySize>
-  >
+>
 class AStarSpace : public Space<AStarNode<KeyType, keySize>> {
 
 
@@ -164,3 +166,5 @@ public:
   // ==========
   void resetStatistics();
 };
+
+}

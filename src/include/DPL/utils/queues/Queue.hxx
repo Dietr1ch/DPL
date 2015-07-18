@@ -8,6 +8,8 @@
 
 
 
+namespace dpl {
+
 /**
  * \brief An abstract class defining (min-)heap operations.
  *
@@ -92,3 +94,5 @@ public:
   }
 
 };
+
+}

@@ -8,6 +8,8 @@
 
 
 
+namespace dpl {
+
 /**
  * \brief A Search Space.
  *
@@ -52,3 +54,5 @@ public:
 
   NodeType& getStart(StateID state);
 };
+
+}

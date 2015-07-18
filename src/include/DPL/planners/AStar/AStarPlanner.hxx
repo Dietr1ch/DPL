@@ -8,6 +8,8 @@
 
 
 
+namespace dpl {
+
 /**
  * \brief A* Planner
  *
@@ -103,3 +105,4 @@ public:
   void costs_changed(StateChanges const & stateChanges);
 };
 
+}
