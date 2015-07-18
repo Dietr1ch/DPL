@@ -8,7 +8,7 @@
 
 
 
-namespace dpl {
+namespace DPL {
 
 /**
  * \brief A MDP State.
@@ -18,8 +18,8 @@ namespace dpl {
 class MDPState {
 
   const StateID id;
-  std::vector<MDPAction*> actions;
-  std::vector<StateID> predecessors;
+  vector<MDPAction*> actions;
+  vector<StateID> predecessors;
 
   void* plannerData;  // Should point to a Node
 

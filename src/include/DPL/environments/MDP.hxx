@@ -8,7 +8,7 @@
 
 
 
-namespace dpl {
+namespace DPL {
 
 /**
  * \brief A Markov Decision Process.
@@ -20,7 +20,7 @@ class MDP {
 public:
   // Data
   // ----
-  std::vector<MDPState*> stateArray;
+  vector<MDPState*> stateArray;
 
   // Constructors
   // ------------
@@ -39,7 +39,7 @@ public:
   /**
    * Output stream support.
    */
-  friend std::ostream& operator <<(std::ostream& os, const MDP& mdp);
+  friend ostream& operator <<(ostream& os, const MDP& mdp);
   /**
    * EasyLogging++ stream support.
    */

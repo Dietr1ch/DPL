@@ -9,7 +9,7 @@
 
 
 
-namespace dpl {
+namespace DPL {
 
 /**
  * \brief DPL Planner interface
@@ -38,11 +38,11 @@ class Planner {
   /**
    * \brief Solves given problem eventually or proves unreachability.
    */
-  Maybe<Solution> plan();
+  optional<Solution> plan();
   /**
    * \brief Try to solve the given problem under the given time bound.
    */
-  Maybe<Solution> plan(Seconds timeGiven);
+  optional<Solution> plan(Seconds timeGiven);
 
 };
 

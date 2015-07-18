@@ -9,7 +9,7 @@
 
 
 
-namespace dpl {
+namespace DPL {
 
 /**
  * \brief A Possible Outcome of executing some MDPAction.
@@ -33,7 +33,7 @@ struct PossibleOutcome {
  * \brief The set of possible outcomes for some MDPAction.
  */
 class Outcomes {
-  std::vector<PossibleOutcome> outcomes;
+  vector<PossibleOutcome> outcomes;
 
 #ifdef DEBUG
   /**
@@ -43,7 +43,7 @@ class Outcomes {
 #endif
 
 public:
-  Outcomes(std::vector<PossibleOutcome> outcomes) : outcomes(outcomes) {
+  Outcomes(vector<PossibleOutcome> outcomes) : outcomes(outcomes) {
 #ifdef DEBUG
     Probability s = 0;
     for(PossibleOutcome o : outcomes)
@@ -56,8 +56,8 @@ public:
   };
   ~Outcomes() {}
 
-  Maybe<PossibleOutcome> mostLikelyIndex() {
-    Maybe<PossibleOutcome> ret;
+  optional<PossibleOutcome> mostLikelyIndex() {
+    optional<PossibleOutcome> ret;
     if(outcomes.empty())
       return ret;
     return *std::max_element(outcomes.begin(), outcomes.end(), PossibleOutcome::likelihood);
@@ -66,7 +66,7 @@ public:
 
 
 
-typedef std::size_t PossibleOutcomeIndex;
+typedef size_t PossibleOutcomeIndex;
 typedef int ActionID;
 
 
@@ -84,7 +84,7 @@ public:
   // ====
   // Source Node
   const StateID  source;
-  // std::unique_ptr<Node> node = nullptr;  // Review: is this necessary?
+  // unique_ptr<Node> node = nullptr;  // Review: is this necessary?
   // Action
   const ActionID actionID;
   Outcomes outcomes;

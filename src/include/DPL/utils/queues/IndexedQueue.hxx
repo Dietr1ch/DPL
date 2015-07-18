@@ -8,9 +8,9 @@
 
 
 
-namespace dpl {
+namespace DPL {
 
-typedef std::size_t IndexType;
+typedef size_t IndexType;
 
 /**
  * \brief A Queue that allows quick update operations.
@@ -63,7 +63,7 @@ public:
 
   // Indexed Queue Operations
   // =======================
-  virtual void updatei(std::size_t elementIndex, const _Key newKey) = 0;
+  virtual void updatei(size_t elementIndex, const _Key newKey) = 0;
 
   inline
   void update(NodeType &n, const _Key newKey) {

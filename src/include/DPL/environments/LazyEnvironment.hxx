@@ -8,7 +8,7 @@
 
 
 
-namespace dpl {
+namespace DPL {
 
 class LazyNodeStub : public NodeStub {
 public:
@@ -17,7 +17,7 @@ public:
   LazyNodeStub(NodeStub ns, bool isTrue=true) : id(ns.id), cost(ns.cost),isTrueCost(isTrue) {}
   LazyNodeStub(StateID state, Cost c, bool isTrue=true) : id(state),cost(c),isTrueCost(isTrue) {}
 };
-typedef std::vector<LazyNodeStub> LazyNeigboorhood;
+typedef vector<LazyNodeStub> LazyNeigboorhood;
 
 
 /**

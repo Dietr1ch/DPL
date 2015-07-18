@@ -8,7 +8,7 @@
 
 
 
-namespace dpl {
+namespace DPL {
 
 /**
  * \brief A Search Space.
@@ -40,8 +40,8 @@ class Space {
     /** Per-search-episode stuff */
     struct{
       /** Expansions made on this space */
-      std::vector<uint> expansions;
-      std::vector<uint> pathLength;
+      vector<uint> expansions;
+      vector<uint> pathLength;
     } perSearch;
   } stats;
 #endif

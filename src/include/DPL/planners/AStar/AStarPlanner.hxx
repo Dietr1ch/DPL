@@ -8,7 +8,7 @@
 
 
 
-namespace dpl {
+namespace DPL {
 
 /**
  * \brief A* Planner
@@ -21,7 +21,7 @@ namespace dpl {
 template<
   typename    KeyType=Cost,
   KeySize     keySize=1,
-  std::size_t stateArgumentCount=1,
+  size_t stateArgumentCount=1,
   typename    OpenType=VectorQueue<AStarNode<KeyType,keySize>, &AStarNode<KeyType,keySize>::indexOpen, KeyType, keySize>
 >
 class AStarPlanner : public Planner {
@@ -38,7 +38,7 @@ class AStarPlanner : public Planner {
    */
   typedef OpenType _Open;
 
-  static_assert(std::is_base_of<
+  static_assert(is_base_of<
                      IndexedQueue<_Node, &_Node::indexOpen, KeyType, keySize>,
                      OpenType
                 >::value,
@@ -94,8 +94,8 @@ protected:
   // ========
 
 public:
-  Maybe<Solution> plan();
-  Maybe<Solution> plan(Seconds givenTime);
+  optional<Solution> plan();
+  optional<Solution> plan(Seconds givenTime);
 
   int set_start(StateID startID);
   int set_goal(StateID goalID);

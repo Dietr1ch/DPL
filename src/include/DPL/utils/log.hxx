@@ -14,9 +14,18 @@ INITIALIZE_EASYLOGGINGPP
 
 
 
-namespace dpl {
+namespace DPL {
 
+
+// Imports
+// =======
+using std::string;
+using std::ostream;
 using std::endl;
+using std::flush;
+
+
+
 typedef el::base::type::ostream_t OutStream;
 
 

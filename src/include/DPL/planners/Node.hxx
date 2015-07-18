@@ -10,7 +10,7 @@
 
 
 
-namespace dpl {
+namespace DPL {
 
 /**
  * \brief base class for a search node.
@@ -59,7 +59,7 @@ public:
   /**
    * Output stream support for Costs.
    */
-  friend std::ostream& operator <<(std::ostream& os, const Node& n) {
+  friend ostream& operator <<(ostream& os, const Node& n) {
     return os << "Node[" << n.id << "]";
   }
   /**

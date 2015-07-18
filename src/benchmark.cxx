@@ -1,4 +1,4 @@
-#define DPL "DPL Planning Library"
+#define __DPL__ "DPL Planning Library"
 
 // Includes
 // ========
@@ -11,8 +11,7 @@
 
 
 using std::cout;
-using std::endl;
-using namespace dpl;
+using namespace DPL;
 
 
 
@@ -39,7 +38,7 @@ void init(int argc, char* argv[]) {
 }
 
 
-void test_showSolution(Maybe<Solution> ms) {
+void test_showSolution(optional<Solution> ms) {
   if(ms) {
     Solution s = *ms;
     log_inf << s.cost;
@@ -54,17 +53,17 @@ void test_costOverflow(){
   cout << "Biggest cost" << endl;
   cout << of << endl;
 
-  std::flush(cout);
+  flush(cout);
   cout << "Overflow attempt 1" << endl;
   of+=1;  // Simple detection does not consider this a problem
   cout << of << endl;
 
-  std::flush(cout);
+  flush(cout);
   cout << "Overflow attempt 2" << endl;
   of+=1;
   cout << of << endl;
 
-  std::flush(cout);
+  flush(cout);
   cout << "Overflow attempt 3" << endl;
   of+=1;
   cout << of << endl;
@@ -80,7 +79,7 @@ void test_loopLogs(){
 }
 
 
-void print(Maybe<AStarSpace<>::_Open::Element> e) {
+void print(optional<AStarSpace<>::_Open::Element> e) {
   if(e)
     log_dst << "Top node: " << *e->node << " (" << e->key << ")";
 }
@@ -95,7 +94,7 @@ public:
   FakeEnv() {}
   ~FakeEnv() {}
 
-  bool loadFile(const std::string file) {
+  bool loadFile(const string file) {
     _ignore(file);
     return false;
   }
@@ -130,7 +129,7 @@ public:
     _ignore(id);
     return false;
   }
-  std::string toString(const StateID state) {
+  string toString(const StateID state) {
     _ignore(state);
     return "";
   }
@@ -182,7 +181,7 @@ void test_queue() {
 
   log_dst << "Removing all objects";
   while(true){
-    Maybe<AStarSpace<>::_Open::Element> e = heap.pop();
+    optional<AStarSpace<>::_Open::Element> e = heap.pop();
     if(e)
       print(e);
     else

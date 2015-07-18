@@ -10,7 +10,7 @@
 
 
 
-namespace dpl {
+namespace DPL {
 
 /**
  * \brief Search iteration identifier
@@ -81,7 +81,7 @@ public:
   /**
    * Output stream support for Search IDs.
    */
-  friend std::ostream& operator<< (std::ostream& os, const _SearchID& searchID) {
+  friend ostream& operator<< (ostream& os, const _SearchID& searchID) {
     if(searchID)
       return os << "Search{" << searchID.id << "}";
     return os << "Search{--}";

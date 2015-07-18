@@ -10,7 +10,7 @@
 
 
 
-namespace dpl {
+namespace DPL {
 
 typedef int KeySize;
 
@@ -70,10 +70,10 @@ public:
   }
 
 
-  KeyType& operator[](std::size_t i) {
+  KeyType& operator[](size_t i) {
     return key[i];
   };
-  const KeyType& operator[](std::size_t i) const {
+  const KeyType& operator[](size_t i) const {
     return key[i];
   };
 
@@ -82,7 +82,7 @@ public:
   /**
    * Output stream support for Key.
    */
-  friend std::ostream& operator <<(std::ostream& os, const Key& k) {
+  friend ostream& operator <<(ostream& os, const Key& k) {
     os << k.key[0];
     for(int i=1; i<keySize; i++)
       os << ", " << k.key[i];

@@ -11,7 +11,7 @@
 
 
 
-namespace dpl {
+namespace DPL {
 
 // Config
 // ======
@@ -184,15 +184,15 @@ public:
   }
 
   /**
-   * Output stream support for Costs.
+   * Output stream support.
    */
-  friend std::ostream& operator <<(std::ostream& os, const _Cost& cost) {
+  friend ostream& operator <<(ostream& os, const _Cost& cost) {
     if(cost.C < _Cost::infinity)
       return os << cost.C;
     return os << "infty";
   }
   /**
-   * EasyLogging++ stream support
+   * EasyLogging++ stream support.
    */
   void log(OutStream& os) const {
     if(C < _Cost::infinity)

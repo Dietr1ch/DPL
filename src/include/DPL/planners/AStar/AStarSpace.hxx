@@ -1,7 +1,5 @@
 #pragma once
 
-using namespace std;
-
 
 // Includes
 // --------
@@ -22,7 +20,7 @@ using namespace std;
 
 
 
-namespace dpl {
+namespace DPL {
 
 /**
  * \brief A* Search Space
@@ -35,7 +33,7 @@ namespace dpl {
 template<
   typename    KeyType=Cost,
   KeySize     keySize=1,
-  std::size_t stateArgumentCount=1,
+  size_t stateArgumentCount=1,
   typename    OpenType=VectorQueue<AStarNode<KeyType,keySize>, &AStarNode<KeyType,keySize>::indexOpen, KeyType, keySize>
 >
 class AStarSpace : public Space<AStarNode<KeyType, keySize>> {
@@ -54,7 +52,7 @@ public:
    */
   typedef OpenType _Open;
 
-  static_assert(std::is_base_of<
+  static_assert(is_base_of<
                      IndexedQueue<_Node, &_Node::indexOpen, KeyType, keySize>,
                      OpenType
                 >::value,

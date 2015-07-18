@@ -8,7 +8,7 @@
 
 
 
-namespace dpl {
+namespace DPL {
 
 /**
  * A Queue that operates on Nodes<KeyType, keySize> implemented over a vector<Element>
@@ -48,14 +48,14 @@ private:
    *         manually managed Element[] array that was used on the SBPL
    *       It doubles the allocated memory when the capacity limit was reached.
    */
-  std::vector<_Element> heap;
+  vector<_Element> heap;
 
   /**
    * Tracks heap usage.
    *
    * \note The heap ignores the 0th element.
    */
-  std::size_t size = 0;
+  size_t size = 0;
 
   struct {
     /**
@@ -65,7 +65,7 @@ private:
   } stats;
 
 public:
-  VectorQueue(std::size_t startingSize=8192) {
+  VectorQueue(size_t startingSize=8192) {
     heap.reserve(startingSize);
 
     _Element dummy;
@@ -83,11 +83,11 @@ public:
   /**
    * \brief Peek the head of the heap without removing it
    */
-  Maybe<_Element> peek() const {
+  optional<_Element> peek() const {
     if(size)
       return _peek();
     else
-      return Maybe<_Element>();
+      return optional<_Element>();
   }
 
   /**
@@ -104,8 +104,8 @@ public:
   /**
    * Removes and return the head of the Queue
    */
-  Maybe<_Element> pop() {
-    Maybe<_Element> ret;
+  optional<_Element> pop() {
+    optional<_Element> ret;
     if (size == 0)
       return ret;
 
@@ -136,7 +136,7 @@ public:
   void insert(NodeType &n, const _Key k) {
     if (n.*index != 0) {
       err_dst << "Node is already in heap\n";
-      throw new std::exception();
+      throw new exception();
     }
     _insert(n, k);
   }
@@ -169,7 +169,7 @@ public:
   void remove(NodeType &n) {
     if (n.*index == 0) {
       err_dst << "Node is not in heap";
-      throw new std::exception();
+      throw new exception();
     }
     _remove(n);
   }
@@ -194,10 +194,10 @@ public:
    * \param i:      Index of an existing Node.
    * \param newKey: New Key for the Node.
    */
-  void updatei(std::size_t i, const _Key newKey) {
+  void updatei(size_t i, const _Key newKey) {
     if (i==0) {
       err_dst << "Node is not in heap";
-      throw new std::exception();
+      throw new exception();
     }
     _updatei(i, newKey);
   }
@@ -211,7 +211,7 @@ public:
    * \param newKey: New Key for the Node.
    */
   inline
-  void _updatei(std::size_t i, const _Key newKey) {
+  void _updatei(size_t i, const _Key newKey) {
     dbg_dst << "Updating node " << heap[i].node << " (" << newKey << ")";
     if(heap[i].key != newKey) {
       heap[i].key = newKey;
@@ -236,7 +236,7 @@ public:
    * Removes all elements from the heap
    */
   void clear() {
-    for (std::size_t i = 1; i<=size; ++i)
+    for (size_t i = 1; i<=size; ++i)
       heap[i].node->*index = 0;  // Invalidates Node*
     size = 0;
   }
@@ -264,7 +264,7 @@ public:
   /**
    * Output stream support.
    */
-  friend std::ostream& operator <<(std::ostream& os, const VectorQueue& q) {
+  friend ostream& operator <<(ostream& os, const VectorQueue& q) {
     // TODO: proper logging.
     _ignore(q);
     os << "VectorQueue {???}"; // << q.heap << "}";
@@ -284,7 +284,7 @@ private:
 
   // Internal operations
   // ===================
-  void percolateUp(std::size_t hole, _Element e) {
+  void percolateUp(size_t hole, _Element e) {
     if (size==0)
       return;
 
@@ -297,11 +297,11 @@ private:
     heap[hole].node->*index = hole;
   }
 
-  void percolateDown(std::size_t hole, _Element e) {
+  void percolateDown(size_t hole, _Element e) {
     if (size==0)
       return;
 
-    for(std::size_t child; 2 * hole <= size; hole = child) {
+    for(size_t child; 2 * hole <= size; hole = child) {
       child = 2*hole;
 
       if (child!=size && heap[child+1].key < heap[child].key)
@@ -319,7 +319,7 @@ private:
     heap[hole].node->*index = hole;
   }
 
-  void percolate(std::size_t hole, _Element e) {
+  void percolate(size_t hole, _Element e) {
     if (size==0)
       return;
 

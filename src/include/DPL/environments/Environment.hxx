@@ -9,7 +9,7 @@
 
 
 
-namespace dpl {
+namespace DPL {
 
 /**
  * \brief An action for Deterministic Environments.
@@ -24,7 +24,7 @@ public:
 
   NodeStub(StateID state, Cost c) : id(state), cost(c) {}
 };
-typedef std::vector<NodeStub> Neigboorhood;
+typedef vector<NodeStub> Neigboorhood;
 
 
 /**
@@ -62,11 +62,11 @@ struct StateChanges {
  * \param StateArgumentCount: State arity for the problem.
  */
 template <
-  std::size_t StateArgumentCount=1
+  size_t StateArgumentCount=1
 >
 class DiscreteEnvironment {
 
-  typedef std::array<std::size_t, StateArgumentCount> StateArguments;
+  typedef array<size_t, StateArgumentCount> StateArguments;
   /**
    * \brief mapping from hashentry stateID (used in environment to contain
    *        the coordinates of a state, say x,y or x,y,theta)
@@ -79,7 +79,7 @@ class DiscreteEnvironment {
    * The value of -1 means that no search state has been created yet for this
    * hashentry
    */
-  std::vector<StateArguments> StateID2IndexMapping;
+  vector<StateArguments> StateID2IndexMapping;
 
   // Initialization
   // ==============
@@ -101,7 +101,7 @@ public:
   /**
    * \brief initialization environment from file (see .cfg files for examples)
    */
-  virtual bool loadFile(const std::string environmentFilePath) = 0;
+  virtual bool loadFile(const string environmentFilePath) = 0;
 
   /**
    * \brief initialization of MDP data structure
@@ -110,7 +110,7 @@ public:
   /**
    * \brief sets a parameter to a value. The set of supported parameters depends on the particular environment
    */
-  virtual bool setParameter(const std::string parameter, int value) {
+  virtual bool setParameter(const string parameter, int value) {
     _ignore_reviewed(parameter);
     _ignore_reviewed(value);
     err_env << ("Environment has no parameters that can be set via SetEnvParameter function\n");
@@ -154,7 +154,7 @@ public:
 
   // Print
   // =====
-  virtual std::string toString(const StateID state) = 0;
+  virtual string toString(const StateID state) = 0;
 
 
   // Benchmarking
@@ -184,7 +184,7 @@ public:
    *
    * \return whether the goal state is reachable from the start
    */
-  virtual Maybe<MDPProblem> generateRandomProblem(Seed seed, int maxTries) {
+  virtual optional<MDPProblem> generateRandomProblem(Seed seed, int maxTries) {
     _ignore_reviewed(seed);
     _ignore_reviewed(maxTries);
     err_env << ("ERROR: generateRandomProblem is not implemented for this environment!\n");
@@ -197,7 +197,7 @@ public:
    *
    * \return whether the goal state is reachable from the start
    */
-  virtual Maybe<StateID> generateRandomStart(Seed seed, int maxTries) {
+  virtual optional<StateID> generateRandomStart(Seed seed, int maxTries) {
     _ignore_reviewed(seed);
     _ignore_reviewed(maxTries);
     err_env << ("ERROR: generateRandomProblem is not implemented for this environment!\n");
@@ -209,7 +209,7 @@ public:
    *
    * \return whether the goal state is reachable from the start
    */
-  virtual Maybe<StateID> generateRandomGoal(Seed seed, int maxTries) {
+  virtual optional<StateID> generateRandomGoal(Seed seed, int maxTries) {
     _ignore_reviewed(seed);
     _ignore_reviewed(maxTries);
     err_env << ("ERROR: generateRandomProblem is not implemented for this environment!\n");
@@ -219,8 +219,8 @@ public:
 
   // Validation
   // ==========
-  Maybe<Cost> checkArc(StateID source, StateID target) {
-    Maybe<Cost> c;
+  optional<Cost> checkArc(StateID source, StateID target) {
+    optional<Cost> c;
     auto neighs = getSuccessors(source);
 
     for(NodeStub n : neighs) {
@@ -235,8 +235,8 @@ public:
     return c;
   }
 
-  Maybe<Cost> check(Path& path) {
-    Maybe<Cost> ret;
+  optional<Cost> check(Path& path) {
+    optional<Cost> ret;
     Cost cost(0);
 
     if(!path.size()){
@@ -248,7 +248,7 @@ public:
       return ret;
     }
 
-    for(std::size_t i=0; i<path.size()-1; i++) {
+    for(size_t i=0; i<path.size()-1; i++) {
       StateID s = path[i];
       StateID t = path[i+1];
 
@@ -257,7 +257,7 @@ public:
         return cost;
       }
 
-      Maybe<Cost> c = checkArc(s, t);
+      optional<Cost> c = checkArc(s, t);
       if(!c) {
         err_env << "Path is not continuous. "
                 << "(" << s << ": " << toString(s) << ")"
@@ -282,7 +282,7 @@ public:
   /**
    * Output stream support for Search IDs.
    */
-  friend std::ostream& operator<< (std::ostream& os, const DiscreteEnvironment& env) {
+  friend ostream& operator<< (ostream& os, const DiscreteEnvironment& env) {
     _ignore_reviewed(env);
     err_env << ("Logging is not implemented for this environment!\n");
     return os << "Environment[???]";

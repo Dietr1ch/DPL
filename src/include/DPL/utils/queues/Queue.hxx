@@ -8,12 +8,12 @@
 
 
 
-namespace dpl {
+namespace DPL {
 
 /**
  * \brief An abstract class defining (min-)heap operations.
  *
- * REVIEW: Maybe this template should receive a type T and a comparator<T>.
+ * REVIEW: optional this template should receive a type T and a comparator<T>.
  *
  * \note It may be important to some to note that these virtual functions
  *         are not expected to give an overhead as the Concrete derived
@@ -36,7 +36,7 @@ public:
   /**
    * Ensure that templating matches the expected types
    */
-  static_assert(std::is_base_of<Node<KeyType, keySize>, NodeType>::value, "NodeType must derive from Node<K,n>");
+  static_assert(is_base_of<Node<KeyType, keySize>, NodeType>::value, "NodeType must derive from Node<K,n>");
 
   /**
    * \brief Type of Key used.
@@ -71,8 +71,8 @@ public:
 
   // Operations
   // ==========
-  virtual Maybe<Element> peek() const = 0;
-  virtual Maybe<Element> pop() = 0;
+  virtual optional<Element> peek() const = 0;
+  virtual optional<Element> pop() = 0;
   virtual void insert(NodeType &n, const _Key k) = 0;
 
   virtual void clear() = 0;
@@ -81,11 +81,11 @@ public:
   // Aliases
   // =======
   inline
-  Maybe<Element> top() const {
+  optional<Element> top() const {
     return peek();
   }
   inline
-  Maybe<Element> remove() const {
+  optional<Element> remove() const {
     return pop();
   }
   inline

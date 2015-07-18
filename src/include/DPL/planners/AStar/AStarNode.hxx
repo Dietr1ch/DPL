@@ -9,7 +9,7 @@
 
 
 
-namespace dpl {
+namespace DPL {
 
 /**
  * \brief A* Search Node.

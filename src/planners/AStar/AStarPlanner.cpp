@@ -14,6 +14,10 @@
 #define MALLOC(type) (  (type*) malloc(sizeof(type))  )
 
 
+using namespace DPL;
+
+
+
 // Object management
 // -----------------
 AStarPlanner::AStarPlanner(DiscreteSpaceInformation *environment) {
@@ -40,7 +44,7 @@ AStarPlanner::~AStarPlanner(){
 
 // Search
 // ------
-maybeSolution
+optional<Solution>
 AStarPlanner::plan(Seconds givenTime) {
 
   assert(space);
