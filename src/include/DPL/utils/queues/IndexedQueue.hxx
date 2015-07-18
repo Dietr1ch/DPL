@@ -54,21 +54,21 @@ public:
 
   // Type aliases
   // ============
-  typedef Queue<NodeType, KeyType, keySize> Queue;
-  typedef typename Queue::Element Element;
-  typedef typename Queue::Key Key;
+  typedef Queue<NodeType, KeyType, keySize> _Queue;
+  typedef typename _Queue::Element _Element;
+  typedef typename _Queue::_Key _Key;
 
 
   // Indexed Queue Operations
   // =======================
-  virtual void updatei(std::size_t elementIndex, const Key newKey) = 0;
+  virtual void updatei(std::size_t elementIndex, const _Key newKey) = 0;
 
   inline
-  void update(NodeType &n, const Key newKey) {
+  void update(NodeType &n, const _Key newKey) {
     updatei(n.*index, newKey);
   }
 
-  virtual void upsert(NodeType &n, const Key newKey) = 0;
+  virtual void upsert(NodeType &n, const _Key newKey) = 0;
 
   virtual void remove(NodeType &n) = 0;
 };

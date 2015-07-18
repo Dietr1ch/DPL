@@ -41,7 +41,7 @@ public:
    *
    * The Key Type is the matching Key<KeyType, keySize>.
    */
-  typedef Key<KeyType, keySize> Key;
+  typedef Key<KeyType, keySize> _Key;
 
   /**
    * \brief An element of the heap, a pair (Node, Key).
@@ -50,11 +50,11 @@ public:
    */
   struct Element {
     NodeType* node;
-    Key       key;
+    _Key      key;
 
     Element() : node(nullptr) {}
     Element(NodeType* n) : node(n) {}
-    Element(NodeType* n, Key k) : node(n),key(k) {}
+    Element(NodeType* n, _Key k) : node(n),key(k) {}
 
     // Comparison Operators
     // --------------------
@@ -71,7 +71,7 @@ public:
   // ==========
   virtual Maybe<Element> peek() const = 0;
   virtual Maybe<Element> pop() = 0;
-  virtual void insert(NodeType &n, const Key k) = 0;
+  virtual void insert(NodeType &n, const _Key k) = 0;
 
   virtual void clear() = 0;
 
@@ -87,7 +87,7 @@ public:
     return pop();
   }
   inline
-  void push(NodeType &n, const Key k) {
+  void push(NodeType &n, const _Key k) {
     insert(n,k);
   }
 

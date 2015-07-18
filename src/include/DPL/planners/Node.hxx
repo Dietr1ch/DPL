@@ -28,7 +28,7 @@ template<
 class Node {
 
 public:
-  typedef Key<KeyType, keySize> Key;
+  typedef Key<KeyType, keySize> _Key;
 
   /**
    * StateID

@@ -155,8 +155,8 @@ void test_queue() {
 
   log_dst << "OpenQueue used: " << heap;
 
-  AStarNode<>::Key k1;
-  AStarNode<>::Key k2;
+  AStarNode<>::_Key k1;
+  AStarNode<>::_Key k2;
   k2[0]+= 20;
   k2[1]=80;
   heap.insert(n1, k1);

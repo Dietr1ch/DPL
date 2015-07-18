@@ -33,9 +33,9 @@ public:
 
   // Type aliases
   // ============
-  typedef IndexedQueue<NodeType, index, KeyType, keySize> IndexedQueue;
-  typedef typename IndexedQueue::Element Element;
-  typedef typename IndexedQueue::Key Key;
+  typedef IndexedQueue<NodeType, index, KeyType, keySize> _IndexedQueue;
+  typedef typename _IndexedQueue::Element _Element;
+  typedef typename _IndexedQueue::_Key _Key;
 
 
 private:
@@ -46,16 +46,14 @@ private:
    *         manually managed Element[] array that was used on the SBPL
    *       It doubles the allocated memory when the capacity limit was reached.
    */
-  std::vector<Element> heap;
+  std::vector<_Element> heap;
 
   /**
-   * Tracks heap usage
+   * Tracks heap usage.
+   *
+   * \note The heap ignores the 0th element.
    */
   std::size_t size = 0;
-  /**
-   * Tracks heap array size
-   */
-  int allocated;
 
   struct {
     /**
@@ -68,7 +66,7 @@ public:
   VectorQueue(std::size_t startingSize=8192) {
     heap.reserve(startingSize);
 
-    Element dummy;
+    _Element dummy;
     heap.push_back(dummy);
   }
   ~VectorQueue() {
@@ -83,18 +81,18 @@ public:
   /**
    * \brief Peek the head of the heap without removing it
    */
-  Maybe<Element> peek() const {
+  Maybe<_Element> peek() const {
     if(size)
       return _peek();
     else
-      return Maybe<Element>();
+      return Maybe<_Element>();
   }
 
   /**
    * \brief Unsafe Peek
    */
   inline
-  Element _peek() const {
+  _Element _peek() const {
     return heap[1];
   }
 
@@ -104,13 +102,13 @@ public:
   /**
    * Removes and return the head of the Queue
    */
-  Maybe<Element> pop() {
-    Maybe<Element> ret;
+  Maybe<_Element> pop() {
+    Maybe<_Element> ret;
     if (size == 0)
       return ret;
 
     return _pop();
-    Element e(heap[1].node);
+    _Element e(heap[1].node);
     percolateDown(1, heap[size--]);
     return e;
   }
@@ -118,8 +116,8 @@ public:
   /**
    * Removes and return the head of the Queue
    */
-  Element _pop() {
-    Element e(heap[1].node);
+  _Element _pop() {
+    _Element e(heap[1].node);
     percolateDown(1, heap[size--]);
     return e;
   }
@@ -133,7 +131,7 @@ public:
    * \param n: Node to insert.
    * \param k: Key for the new Node.
    */
-  void insert(NodeType &n, const Key k) {
+  void insert(NodeType &n, const _Key k) {
     if (n.*index != 0) {
       err_dst << "Node is already in heap\n";
       throw new std::exception();
@@ -150,8 +148,8 @@ public:
    * \param k: Key for the new Node.
    */
   inline
-  void _insert(NodeType &n, const Key k) {
-    Element e;
+  void _insert(NodeType &n, const _Key k) {
+    _Element e;
     dbg_dst << "Inserting node " << n << " (" << k << ")";
     e.node = &n;
     e.key = k;
@@ -194,7 +192,7 @@ public:
    * \param i:      Index of an existing Node.
    * \param newKey: New Key for the Node.
    */
-  void updatei(std::size_t i, const Key newKey) {
+  void updatei(std::size_t i, const _Key newKey) {
     if (i==0) {
       err_dst << "Node is not in heap";
       throw new std::exception();
@@ -211,7 +209,7 @@ public:
    * \param newKey: New Key for the Node.
    */
   inline
-  void _updatei(std::size_t i, const Key newKey) {
+  void _updatei(std::size_t i, const _Key newKey) {
     dbg_dst << "Updating node " << heap[i].node << " (" << newKey << ")";
     if(heap[i].key != newKey) {
       heap[i].key = newKey;
@@ -222,7 +220,7 @@ public:
 
   // Upsert
   // ------
-  void upsert(NodeType &n, const Key newKey) {
+  void upsert(NodeType &n, const _Key newKey) {
     if(n.*index==0)
       insert(n, newKey);
     else
@@ -250,12 +248,6 @@ public:
    */
   bool empty() {
     return size==0;
-  }
-  /**
-   * \brief Checks if the heap is full
-   */
-  bool full()  {
-    return size==allocated-1;
   }
   /**
    * \brief Checks if a node is in the heap
@@ -290,7 +282,7 @@ private:
 
   // Internal operations
   // ===================
-  void percolateUp(std::size_t hole, Element e) {
+  void percolateUp(std::size_t hole, _Element e) {
     if (size==0)
       return;
 
@@ -303,7 +295,7 @@ private:
     heap[hole].node->*index = hole;
   }
 
-  void percolateDown(std::size_t hole, Element e) {
+  void percolateDown(std::size_t hole, _Element e) {
     if (size==0)
       return;
 
@@ -325,7 +317,7 @@ private:
     heap[hole].node->*index = hole;
   }
 
-  void percolate(std::size_t hole, Element e) {
+  void percolate(std::size_t hole, _Element e) {
     if (size==0)
       return;
 
