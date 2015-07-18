@@ -90,4 +90,5 @@ public:
   void push(NodeType &n, const Key k) {
     insert(n,k);
   }
+
 };

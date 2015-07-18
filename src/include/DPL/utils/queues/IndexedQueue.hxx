@@ -34,7 +34,7 @@ typedef std::size_t IndexType;
  *         Don't remove this until proper benchmarking is done.
  *
  * \param NodeType: Node to be hold on the Queue. Should extend DPL::Node
- * \param *index:   Node member that holds the index for this queue.
+ * \param *index:   Node member that holds the index for this Queue.
  * \param KeyType:  Type to use for comparisons.
  * \param keySize:  Number of comparisons ('1+tie breaks').
  */

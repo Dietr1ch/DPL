@@ -3,6 +3,7 @@
 // Includes
 // ========
 // DPL
+#include <DPL/environments/Cost.hxx>
 #include <DPL/environments/StateID.hxx>
 #include <DPL/utils/Key.hxx>
 

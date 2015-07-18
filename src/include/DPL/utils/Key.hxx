@@ -4,6 +4,8 @@
 // ========
 // C
 #include <cstddef>
+// DPL
+#include <DPL/utils/log.hxx>
 
 
 

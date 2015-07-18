@@ -43,7 +43,7 @@ public:
    */
   virtual void log(OutStream& os) const {
     err_env << "Logging not implomented";
-    _ignore(os);
+    _ignore_reviewed(os);
   }
 };
 

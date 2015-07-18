@@ -3,7 +3,8 @@
 // Includes
 // ========
 // DPL
-#include <DPL/utils/queues/VectorQueue.hxx>
+#include <DPL/planners/Node.hxx>
+#include <DPL/utils/queues/IndexedQueue.hxx>
 
 
 
@@ -21,20 +22,11 @@ protected:
   Cost      _g;
   Heuristic _h;
 
+public:
   IndexType indexOpen = 0;
 
 
 public:
-  /**
-   * \brief The Open 'list' ranks the Nodes on the fringe.
-   *
-   * Actually it's a priority queue, allowing to quickly expand the best (pop) and update nodes.
-   *
-   * REVIEW: The Queue type should be a template argument requiring that it derives IndexedQueue.
-   *           This requires to have a materialization of this Node template (to select the
-   *           index member) which is not available while passing the arguments to the Node template.
-   */
-  typedef VectorQueue<AStarNode<KeyType, keySize>, &AStarNode::indexOpen, KeyType, keySize> Open;
 
   AStarNode(StateID stateID, Cost g=Cost::infinity, Heuristic h=0) : Node<KeyType, keySize>(stateID) {
     _g = g;

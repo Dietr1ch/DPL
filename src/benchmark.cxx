@@ -79,7 +79,7 @@ void test_loopLogs(){
 }
 
 
-void print(Maybe<AStarNode<>::Open::Element> e) {
+void print(Maybe<AStarSpace<>::_Open::Element> e) {
   if(e)
     log_dst << "Top node: " << *e->node << " (" << e->key << ")";
 }
@@ -151,7 +151,9 @@ void test_queue() {
   AStarNode<> n1(0);
   AStarNode<> n2(1);
 
-  AStarNode<>::Open heap;
+  AStarSpace<>::_Open heap;
+
+  log_dst << "OpenQueue used: " << heap;
 
   AStarNode<>::Key k1;
   AStarNode<>::Key k2;
@@ -179,7 +181,7 @@ void test_queue() {
 
   log_dst << "Removing all objects";
   while(true){
-    Maybe<AStarNode<>::Open::Element> e = heap.pop();
+    Maybe<AStarSpace<>::_Open::Element> e = heap.pop();
     if(e)
       print(e);
     else

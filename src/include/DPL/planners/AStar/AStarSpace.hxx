@@ -11,6 +11,7 @@ using namespace std;
 #include <DPL/planners/AStar/AStarNode.hxx>
 #include <DPL/planners/Space.hxx>
 #include <DPL/environments/Environment.hxx>
+#include <DPL/utils/queues/VectorQueue.hxx>
 
 
 // Configuration
@@ -24,26 +25,45 @@ using namespace std;
 /**
  * \brief A* Search Space
  *
- * \param KeyType:  Type to use for comparisons.
- * \param keySize:  Number of comparisons ('1+tie breaks').
+ * \param KeyType:             Type to use for comparisons.
+ * \param keySize:             Number of comparisons ('1+tie breaks').
  * \param stateArgumentCount:  Number of arguments that States have (2D grid -> 2).
+ * \param OpenType:            Queue to rank the 'Open List'.
  */
 template<
   typename    KeyType=Cost,
   KeySize     keySize=1,
-  std::size_t stateArgumentCount=1
+  std::size_t stateArgumentCount=1,
+  typename    OpenType=VectorQueue<AStarNode<KeyType,keySize>, &AStarNode<KeyType,keySize>::indexOpen, KeyType, keySize>
   >
 class AStarSpace : public Space<AStarNode<KeyType, keySize>> {
 
-  typedef AStarNode<KeyType, keySize> AStarNode;
-  typedef Key<KeyType, keySize> AStarKey;
-  typedef DiscreteEnvironment<stateArgumentCount> DiscreteEnvironment;
-  typedef typename AStarNode::Open Open;
+
+public:
+
+  typedef AStarNode<KeyType, keySize> _Node;
+  typedef DiscreteEnvironment<stateArgumentCount> _Env;
+  typedef Key<KeyType, keySize> _Key;
+
+  /**
+   * \brief The Open 'list' ranks the Nodes on the fringe.
+   *
+   * Actually it's a priority queue, allowing to quickly expand the best (pop) and update nodes.
+   */
+  typedef OpenType _Open;
+
+  static_assert(std::is_base_of<
+                     IndexedQueue<_Node, &_Node::indexOpen, KeyType, keySize>,
+                     OpenType
+                >::value,
+                "OpenType must derive from IndexedQueue");
+
+
 
 public:
   // Problem data
   std::unique_ptr<MDP> mdp;
-  DiscreteEnvironment& environment;
+  _Env& environment;
 
   // Instance data
   MDPState *startState   = nullptr;
@@ -57,7 +77,7 @@ public:
   SearchID iteration;  // Search iteration identifier
 
   // Data
-  Open open;
+  OpenType open;
 
   // Configuration
   bool backwardSearch;  // It should be on the planner, but eases heuristic calculation
@@ -67,7 +87,7 @@ public:
   // Object management
   // =================
 
-  AStarSpace(DiscreteEnvironment& environment) : environment(environment) {
+  AStarSpace(_Env& environment) : environment(environment) {
     dbg_mem << "Creating space with " << environment;
 
     backwardSearch = false;
@@ -78,7 +98,7 @@ public:
   }
 
   /** Ensures Node values are updated up to this search iteration */
-  inline void updateNode(AStarNode &node);
+  inline void updateNode(_Node &node);
   /** Computes the heuristic value from a State to the goal State */
   inline int computeHeuristic(const MDPState &origin);
 
@@ -94,16 +114,16 @@ public:
   // ====================
 
   /** Inserts or Updates (Upserts) a node in the open list */
-  void upsertOpen(AStarNode *node);
+  void upsertOpen(_Node *node);
 
 
   /** UNSAFE: inserts a node in open, No questions asked */
-  void insertOpen_(AStarNode *node, AStarKey key);
+  void insertOpen_(_Node *node, _Key key);
   /** UNSAFE: updates a node in open, No questions asked */
-  void updateOpen_(AStarNode *node, AStarKey key);
+  void updateOpen_(_Node *node, _Key key);
 
   /** gets the best node on the open 'list' */
-  AStarNode* popOpen();
+  _Node* popOpen();
 
   /** Checks wheter the open list is empty */
   bool openEmpty();
@@ -117,25 +137,25 @@ public:
   // =================
 
   /** Get an updated node */
-  AStarNode& getNode(StateID id) {
+  _Node& getNode(StateID id) {
   }
   /** Get a node without updating h (having h=0 if it's new) */
-  AStarNode& getNode0(StateID id) {
+  _Node& getNode0(StateID id) {
   }
 
   /** Get an updated node */
-  AStarNode* getNode(MDPState *mdpState) {
+  _Node* getNode(MDPState *mdpState) {
   }
 
   /** UNSAFE: Get an updated node */
-  AStarNode* getNode_(StateID id) {
+  _Node* getNode_(StateID id) {
   }
 
   /** Gets the updated starting node */
-  AStarNode& getStart() {
+  _Node& getStart() {
   }
   /** Gets the updated goal node */
-  AStarNode* getGoal() {
+  _Node* getGoal() {
   }
 
 

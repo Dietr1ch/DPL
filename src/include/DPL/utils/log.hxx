@@ -76,4 +76,12 @@ el::Logger* logger_mem = el::Loggers::getLogger(str_mem);
 template <
   typename T
 >
-void _ignore(T &&) {}
+void _ignore_reviewed(T &&) {}
+
+template <
+  typename T
+>
+void _ignore(T &&) {
+  dbg_inf << "Review ignoring";
+  el::base::debug::StackTrace();
+}

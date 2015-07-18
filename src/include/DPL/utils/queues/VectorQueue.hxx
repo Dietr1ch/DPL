@@ -67,6 +67,9 @@ private:
 public:
   VectorQueue(std::size_t startingSize=8192) {
     heap.reserve(startingSize);
+
+    Element dummy;
+    heap.push_back(dummy);
   }
   ~VectorQueue() {
   }
@@ -259,6 +262,26 @@ public:
    */
   bool contains(NodeType &n) {
     return n.*index!=0;
+  }
+
+
+  // Print
+  // =====
+  /**
+   * Output stream support.
+   */
+  friend std::ostream& operator <<(std::ostream& os, const VectorQueue& q) {
+    // TODO: proper logging.
+    _ignore(q);
+    os << "VectorQueue {???}"; // << q.heap << "}";
+    return os;
+  }
+  /**
+   * EasyLogging++ stream support.
+   */
+  virtual void log(OutStream& os) const {
+    // TODO: proper logging.
+    os << "VectorQueue {???}";  // << heap << "}";
   }
 
 

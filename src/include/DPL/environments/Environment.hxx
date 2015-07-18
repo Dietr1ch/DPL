@@ -109,8 +109,8 @@ public:
    * \brief sets a parameter to a value. The set of supported parameters depends on the particular environment
    */
   virtual bool setParameter(const std::string parameter, int value) {
-    _ignore(parameter);
-    _ignore(value);
+    _ignore_reviewed(parameter);
+    _ignore_reviewed(value);
     err_env << ("Environment has no parameters that can be set via SetEnvParameter function\n");
     return false;
   }
@@ -170,8 +170,8 @@ public:
    */
   virtual void modifyEnvironment(Seed seed, Percentage changes) {
     // TODO: this should take more parameters and return something?
-    _ignore(seed);
-    _ignore(changes);
+    _ignore_reviewed(seed);
+    _ignore_reviewed(changes);
     err_env << ("ERROR: modifyEnvironment is not implemented for this environment!\n");
     throw new exception();
   };
@@ -183,8 +183,8 @@ public:
    * \return whether the goal state is reachable from the start
    */
   virtual Maybe<MDPProblem> generateRandomProblem(Seed seed, int maxTries) {
-    _ignore(seed);
-    _ignore(maxTries);
+    _ignore_reviewed(seed);
+    _ignore_reviewed(maxTries);
     err_env << ("ERROR: generateRandomProblem is not implemented for this environment!\n");
     throw new exception();
   };
@@ -196,8 +196,8 @@ public:
    * \return whether the goal state is reachable from the start
    */
   virtual Maybe<StateID> generateRandomStart(Seed seed, int maxTries) {
-    _ignore(seed);
-    _ignore(maxTries);
+    _ignore_reviewed(seed);
+    _ignore_reviewed(maxTries);
     err_env << ("ERROR: generateRandomProblem is not implemented for this environment!\n");
     throw new exception();
   };
@@ -208,8 +208,8 @@ public:
    * \return whether the goal state is reachable from the start
    */
   virtual Maybe<StateID> generateRandomGoal(Seed seed, int maxTries) {
-    _ignore(seed);
-    _ignore(maxTries);
+    _ignore_reviewed(seed);
+    _ignore_reviewed(maxTries);
     err_env << ("ERROR: generateRandomProblem is not implemented for this environment!\n");
     throw new exception();
   };
@@ -281,12 +281,15 @@ public:
    * Output stream support for Search IDs.
    */
   friend std::ostream& operator<< (std::ostream& os, const DiscreteEnvironment& env) {
-    return os << "Environment[" << env << "]";
+    _ignore_reviewed(env);
+    err_env << ("Logging is not implemented for this environment!\n");
+    return os << "Environment[???]";
   }
   /**
    * EasyLogging++ stream support
    */
   virtual void log(OutStream& os) const {
+    err_env << ("Logging is not implemented for this environment!\n");
     os << "Environment["<< (void*)this << "]";
   }
 
