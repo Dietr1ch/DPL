@@ -23,7 +23,7 @@ typedef std::vector<LazyNodeStub> LazyNeigboorhood;
  */
 template <
   int StateArgumentCount
-  >
+>
 class LazyEnvironment : DiscreteEnvironment<StateArgumentCount> {
   virtual LazyNeigboorhood getLazySuccessors(StateID sourceState) = 0;
   virtual LazyNeigboorhood getLazyPredecessors(StateID targetState) = 0;

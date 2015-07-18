@@ -68,7 +68,9 @@ typedef int32_t CostNumericType;
  * Provides an infinity value, and overflow detection support enables careless
  *   operation.
  */
-template<typename CostType>
+template<
+  typename CostType
+>
 class _Cost {
 
 public:

@@ -11,9 +11,16 @@
 
 
 /**
- * Search iteration identifier
+ * \brief Search iteration identifier
+ *
+ * Used to tag search iterations, allowing to recognize old data
+ *   this helps to build Lazy algorithms.
+ *
+ * \note Defaults to 0, which is an invalid SearchID. Can only be incremented.
  */
-template<typename INT>
+template<
+  typename INT
+>
 class _SearchID : public el::Loggable {
 
 private:

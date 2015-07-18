@@ -7,11 +7,9 @@
 // C++
 #include <algorithm>
 // DPL
-#include <dpl/planners/AStar/AStarPlanner.hpp>
-#include <dpl/utils/log.hpp>
+#include <DPL/planners/AStar/AStarPlanner.hxx>
+#include <DPL/utils/log.hxx>
 
-
-#include <dpl/utils/Queue.hpp>
 
 #define MALLOC(type) (  (type*) malloc(sizeof(type))  )
 

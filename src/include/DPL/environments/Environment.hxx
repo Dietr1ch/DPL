@@ -55,11 +55,13 @@ struct StateChanges {
  * mapping from stateID to actual state variables (coordinates) using
  * StateID2IndexMapping array
  *
+ * \note Known as DiscreteSpaceInformation on the SBPL.
+ *
  * \param StateArgumentCount: State arity for the problem.
  */
 template <
   std::size_t StateArgumentCount=1
-  >
+>
 class DiscreteEnvironment {
 
   typedef std::array<std::size_t, StateArgumentCount> StateArguments;
@@ -272,4 +274,20 @@ public:
 
 
   // TODO: Expose Sensor updates
+
+  // Logging
+  // =======
+  /**
+   * Output stream support for Search IDs.
+   */
+  friend std::ostream& operator<< (std::ostream& os, const DiscreteEnvironment& env) {
+    return os << "Environment[" << env << "]";
+  }
+  /**
+   * EasyLogging++ stream support
+   */
+  virtual void log(OutStream& os) const {
+    os << "Environment["<< (void*)this << "]";
+  }
+
 };

@@ -75,5 +75,5 @@ el::Logger* logger_mem = el::Loggers::getLogger(str_mem);
  */
 template <
   typename T
-  >
+>
 void _ignore(T &&) {}

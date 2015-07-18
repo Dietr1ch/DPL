@@ -8,6 +8,7 @@
 
 
 
+
 /**
  * \brief A Possible Outcome of executing some MDPAction.
  */
@@ -23,6 +24,8 @@ struct PossibleOutcome {
     return l.chance < r.chance;
   }
 };
+
+
 
 /**
  * \brief The set of possible outcomes for some MDPAction.
@@ -59,8 +62,12 @@ public:
   }
 };
 
+
+
 typedef std::size_t PossibleOutcomeIndex;
 typedef int ActionID;
+
+
 
 /**
  * \brief A MDP Action.

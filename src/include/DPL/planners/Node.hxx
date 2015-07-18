@@ -8,6 +8,7 @@
 
 
 
+
 /**
  * \brief base class for a search node.
  *
@@ -19,7 +20,10 @@
  *
  * \note Known as AbstractSearchState on the SBPL.
  */
-template<typename KeyType=Cost, KeySize keySize=1>
+template<
+  typename KeyType=Cost,
+  KeySize keySize=1
+>
 class Node {
 
 public:

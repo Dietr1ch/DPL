@@ -46,5 +46,7 @@ typedef double Seconds;
 // Optional
 // ========
 // optional alias
-template<typename T>
+template<
+  typename T
+>
 using Maybe = std::experimental::optional<T>;

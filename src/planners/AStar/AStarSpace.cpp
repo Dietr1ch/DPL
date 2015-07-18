@@ -4,33 +4,13 @@
 #include <algorithm>
 
 // SBPL Includes
-#include <dpl/planners/AStar/AStarSpace.hpp>
-#include <dpl/utils/Queue.hxx>
+#include <DPL/planners/AStar/AStarSpace.hxx>
 
 
 
 
 // A* Space
 // ========
-AStarSpace::AStarSpace(DiscreteSpaceInformation *problemDSI) {
-  MEM("Creating space with problem[%p]", (void*)problemDSI);
-  assert(problemDSI);
-
-  open = new WeakHeap;
-  problem = problemDSI;
-
-  backwardSearch = false;
-
-  iteration = (SearchID) 0;
-
-  startState = nullptr;
-  goalState  = nullptr;
-
-  // Asserts to remind whats true now (useless asserts)
-  assert(stats.perSearch.expansions.empty());
-  assert(stats.perSearch.pathLength.empty());
-}
-
 AStarSpace::~AStarSpace() {
   MEM("Space at %p will be destroyed...", (void*)this);
 

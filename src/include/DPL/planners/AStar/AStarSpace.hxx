@@ -33,7 +33,7 @@ template<
   KeySize     keySize=1,
   std::size_t stateArgumentCount=1
   >
-class AStarSpace : public Space {
+class AStarSpace : public Space<AStarNode<KeyType, keySize>> {
 
   typedef AStarNode<KeyType, keySize> AStarNode;
   typedef Key<KeyType, keySize> AStarKey;
@@ -46,9 +46,9 @@ public:
   DiscreteEnvironment& environment;
 
   // Instance data
-  MDPState *startState;
-  MDPState *currentState;
-  MDPState *goalState;
+  MDPState *startState   = nullptr;
+  MDPState *currentState = nullptr;
+  MDPState *goalState    = nullptr;
 
   // Iterative Planner information
   // -----------------------------
@@ -67,7 +67,11 @@ public:
   // Object management
   // =================
 
-  AStarSpace(DiscreteEnvironment& environment) : environment(environment) {}
+  AStarSpace(DiscreteEnvironment& environment) : environment(environment) {
+    dbg_mem << "Creating space with " << environment;
+
+    backwardSearch = false;
+  }
   ~AStarSpace() {
     log_mem << "AStarSpace at " << (void*)this << " will be destroyed...";
     log_mem << "AStarSpace at " << (void*)this << " was destroyed...";
@@ -113,20 +117,26 @@ public:
   // =================
 
   /** Get an updated node */
-  AStarNode* getNode(StateID id);
+  AStarNode& getNode(StateID id) {
+  }
   /** Get a node without updating h (having h=0 if it's new) */
-  AStarNode* getNode0(StateID id);
+  AStarNode& getNode0(StateID id) {
+  }
 
   /** Get an updated node */
-  AStarNode* getNode(MDPState *mdpState);
+  AStarNode* getNode(MDPState *mdpState) {
+  }
 
   /** UNSAFE: Get an updated node */
-  AStarNode* getNode_(StateID id);
+  AStarNode* getNode_(StateID id) {
+  }
 
   /** Gets the updated starting node */
-  AStarNode* getStart();
+  AStarNode& getStart() {
+  }
   /** Gets the updated goal node */
-  AStarNode* getGoal();
+  AStarNode* getGoal() {
+  }
 
 
 

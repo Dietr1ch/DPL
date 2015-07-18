@@ -3,14 +3,13 @@
 // Includes
 // ========
 // DPL
-#include <DPL/utils/BaseHeap.hxx>
-
+#include <DPL/utils/queues/IndexedQueue.hxx>
 
 
 
 
 /**
- * A Heap that operates on Nodes<KeyType, keySize> implemented over a vector<Element>
+ * A Queue that operates on Nodes<KeyType, keySize> implemented over a vector<Element>
  *
  * \param NodeType: Node to be hold on the heap. Should extend DPL::Node
  * \param *index:   Node member that holds the index for this heap.
@@ -22,16 +21,21 @@ template<
   IndexType (NodeType::*index),
   typename   KeyType,
   int        keySize=1
-  >
-class VectorHeap : public IndexedHeap<NodeType, index, KeyType, keySize> {
+>
+class VectorQueue : public IndexedQueue<
+                             NodeType,
+                             index,
+                             KeyType,
+                             keySize
+                           > {
 
 public:
 
   // Type aliases
   // ============
-  typedef IndexedHeap<NodeType, index, KeyType, keySize> IndexedHeap;
-  typedef typename IndexedHeap::Element Element;
-  typedef typename IndexedHeap::Key Key;
+  typedef IndexedQueue<NodeType, index, KeyType, keySize> IndexedQueue;
+  typedef typename IndexedQueue::Element Element;
+  typedef typename IndexedQueue::Key Key;
 
 
 private:
@@ -61,14 +65,14 @@ private:
   } stats;
 
 public:
-  VectorHeap(std::size_t startingSize = 4096) {
+  VectorQueue(std::size_t startingSize=8192) {
     heap.reserve(startingSize);
   }
-  ~VectorHeap() {
+  ~VectorQueue() {
   }
 
 
-  // Heap operations
+  // Queue operations
   // ===============
 
   // Peek
@@ -95,7 +99,7 @@ public:
   // Pop
   // ---
   /**
-   * Removes and return the head of the Heap
+   * Removes and return the head of the Queue
    */
   Maybe<Element> pop() {
     Maybe<Element> ret;
@@ -109,7 +113,7 @@ public:
   }
 
   /**
-   * Removes and return the head of the Heap
+   * Removes and return the head of the Queue
    */
   Element _pop() {
     Element e(heap[1].node);
@@ -137,7 +141,7 @@ public:
   /**
    * \brief Unsafe insert
    *
-   * \note Assumes that the Node is not currently on the Heap.
+   * \note Assumes that the Node is not currently on the Queue.
    *
    * \param n: Node to insert.
    * \param k: Key for the new Node.
@@ -236,7 +240,7 @@ public:
 
 
 
-  // Heap state
+  // Queue state
   // ==========
   /**
    * \brief Checks if the heap is empty

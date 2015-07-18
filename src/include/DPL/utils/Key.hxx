@@ -20,7 +20,7 @@ typedef int KeySize;
 template<
   typename KeyType,
   KeySize  keySize
-  >
+>
 class Key {
   bool changed = true;
   KeyType key[keySize] = {0};

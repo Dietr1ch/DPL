@@ -3,7 +3,7 @@
 // Includes
 // ========
 // DPL
-#include <DPL/utils/VectorHeap.hxx>
+#include <DPL/utils/queues/VectorQueue.hxx>
 
 
 
@@ -14,7 +14,7 @@
 template<
   typename KeyType = Cost,
   KeySize  keySize = 1
-  >
+>
 class AStarNode : public Node<KeyType, keySize> {
 
 protected:
@@ -30,11 +30,11 @@ public:
    *
    * Actually it's a priority queue, allowing to quickly expand the best (pop) and update nodes.
    *
-   * REVIEW: The Heap type should be a template argument requiring that it derives IndexedHeap.
+   * REVIEW: The Queue type should be a template argument requiring that it derives IndexedQueue.
    *           This requires to have a materialization of this Node template (to select the
    *           index member) which is not available while passing the arguments to the Node template.
    */
-  typedef VectorHeap<AStarNode<KeyType, keySize>, &AStarNode::indexOpen, KeyType, keySize> Open;
+  typedef VectorQueue<AStarNode<KeyType, keySize>, &AStarNode::indexOpen, KeyType, keySize> Open;
 
   AStarNode(StateID stateID, Cost g=Cost::infinity, Heuristic h=0) : Node<KeyType, keySize>(stateID) {
     _g = g;

@@ -1,4 +1,4 @@
-#define DPL DPL
+#define DPL "DPL Planning Library"
 
 // Includes
 // ========
@@ -9,6 +9,7 @@
 // DPL
 #include <DPL/planners/AStar/AStarPlanner.hxx>
 
+
 using std::cout;
 using std::endl;
 
@@ -16,10 +17,12 @@ using std::endl;
 
 
 void signalHandler(int s) {
-  cout << "caught signal " << s <<" exiting" << endl;
+  cout << "caught signal " << s << ". Terminating" << endl;
 
   exit(1);
 }
+
+
 void init(int argc, char* argv[]) {
 #ifdef NDEBUG
   cout << "Starting on Release Mode" << endl;
@@ -44,6 +47,7 @@ void test_showSolution(Maybe<Solution> ms) {
   }
 }
 
+
 void test_costOverflow(){
   Cost of = ((CostNumericType)Cost::infinity)-1;
   cout << "Biggest cost" << endl;
@@ -65,6 +69,7 @@ void test_costOverflow(){
   cout << of << endl;
 }
 
+
 void test_loopLogs(){
   for(int i=0; i<10; i++) {
     LOG_EVERY_N(2, INFO) << "Logged every second iter";
@@ -73,10 +78,12 @@ void test_loopLogs(){
   }
 }
 
+
 void print(Maybe<AStarNode<>::Open::Element> e) {
   if(e)
     log_dst << "Top node: " << *e->node << " (" << e->key << ")";
 }
+
 
 /**
  *
@@ -135,7 +142,8 @@ public:
   }
 };
 
-void test_heap() {
+
+void test_queue() {
 
   FakeEnv env;
   AStarSpace<> space(env);
@@ -165,7 +173,7 @@ void test_heap() {
   auto b = heap._peek().node;
 
   if(a!=b)
-    log_dst << "Heap reordered elements";
+    log_dst << "Queue reordered elements";
   if(b<a)
     log_dst << "min heap";
 
@@ -181,10 +189,11 @@ void test_heap() {
 }
 
 
+
 int main(int argc, char* argv[]) {
   init(argc, argv);
 
-  test_heap();
+  test_queue();
 
   Cost c(10);
   Cost i = Cost::infinity;

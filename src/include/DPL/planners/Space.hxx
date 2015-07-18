@@ -10,7 +10,16 @@
 
 /**
  * \brief A Search Space.
+ *
+ * This handles the Search Space for the Planner.
+ *
+ * \note Not defined on the SBPL, but used multiple times.
+ *
+ * \param NodeType Type of the node used.
  */
+template<
+  typename NodeType
+  >
 class Space {
 
   //StateID start;
@@ -39,4 +48,7 @@ public:
   Space() {}
   ~Space() {}
 
+  NodeType& getNode(StateID state);
+
+  NodeType& getStart(StateID state);
 };
