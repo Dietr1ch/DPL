@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 2.8)
 PROJECT( DPL )
 
 # version (e.g. for packaging)
-set(DPL_MAJOR_VERSION 1)
-set(DPL_MINOR_VERSION 2)
+set(DPL_MAJOR_VERSION 0)
+set(DPL_MINOR_VERSION 1)
 set(DPL_PATCH_VERSION 0)
 set(DPL_VERSION ${DPL_MAJOR_VERSION}.${DPL_MINOR_VERSION}.${DPL_PATCH_VERSION})
 
@@ -17,10 +17,6 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
 
 
 include_directories(src/include)
-
-#add_library(DPL SHARED
-  # src/utils/heap.cxx
-  #)
 
 set(DPL_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}/include")
 set(DPL_LIB_DIR "${CMAKE_INSTALL_PREFIX}/lib")
@@ -50,6 +46,3 @@ install(DIRECTORY src/include/DPL DESTINATION include
 #         LIBRARY DESTINATION lib)
 
 add_executable(benchmark src/benchmark.cxx)
-# target_link_libraries(benchmark DPL)
-
-# add_subdirectory(src/planners/AStar)

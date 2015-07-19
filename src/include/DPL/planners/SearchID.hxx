@@ -23,7 +23,7 @@ namespace DPL {
 template<
   typename INT
 >
-class _SearchID : public el::Loggable {
+class _SearchID {
 
 private:
   // Single member holding the identifier.
@@ -47,6 +47,15 @@ public:
     return false;
   }
 
+
+  // Comparison Operators
+  // --------------------
+  inline bool operator ==(const _SearchID& search) const { return id == search.id; }
+  inline bool operator !=(const _SearchID& search) const { return id != search.id; }
+
+
+  // Operators
+  // =========
   /**
    * Increment SearchID
    */
@@ -78,6 +87,9 @@ public:
     return id;
   }
 
+
+  // Logging
+  // =======
   /**
    * Output stream support for Search IDs.
    */

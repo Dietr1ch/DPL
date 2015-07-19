@@ -2,6 +2,8 @@
 
 // Includes
 // ========
+// C
+#include <cassert>
 // DPL
 #include <DPL/utils/queues/IndexedQueue.hxx>
 
@@ -17,18 +19,21 @@ namespace DPL {
  * \param *index:   Node member that holds the index for this heap.
  * \param KeyType:  Type to use for comparisons.
  * \param keySize:  Number of comparisons ('1+tie breaks').
+ * \param MIN_QUEUE: Whether lower key is prefered or not.
  */
 template<
   typename   NodeType,
   IndexType (NodeType::*index),
   typename   KeyType,
-  int        keySize=1
+  int        keySize=1,
+  bool       MIN_QUEUE=true
 >
 class VectorQueue : public IndexedQueue<
                              NodeType,
                              index,
                              KeyType,
-                             keySize
+                             keySize,
+                             MIN_QUEUE
                            > {
 
 public:
@@ -70,8 +75,12 @@ public:
 
     _Element dummy;
     heap.push_back(dummy);
+
+    assert(heap.size()>=1);
+    assert(!heap[0].node);
   }
   ~VectorQueue() {
+    assert(heap.size()>=1);
   }
 
 
@@ -95,6 +104,8 @@ public:
    */
   inline
   _Element _peek() const {
+    assert(heap.size()>=1);
+
     return heap[1];
   }
 
@@ -110,16 +121,17 @@ public:
       return ret;
 
     return _pop();
-    _Element e(heap[1].node);
-    percolateDown(1, heap[size--]);
-    return e;
   }
 
   /**
    * Removes and return the head of the Queue
    */
   _Element _pop() {
-    _Element e(heap[1].node);
+    assert(heap.size()>=1);
+
+    _Element e(_peek());
+    assert(e.node);
+
     percolateDown(1, heap[size--]);
     return e;
   }
@@ -151,10 +163,10 @@ public:
    */
   inline
   void _insert(NodeType &n, const _Key k) {
-    _Element e;
+    assert(heap.size()>=1);
+
     dbg_dst << "Inserting node " << n << " (" << k << ")";
-    e.node = &n;
-    e.key = k;
+    _Element e(n, k);
     percolateUp(++size, e);
   }
 
@@ -181,6 +193,8 @@ public:
    */
   inline
   void _remove(NodeType &n) {
+    assert(heap.size()>=1);
+
     percolate(n.*index, heap[size--]);
     n.*index = 0;
   }
@@ -212,6 +226,8 @@ public:
    */
   inline
   void _updatei(size_t i, const _Key newKey) {
+    assert(heap.size()>=1);
+
     dbg_dst << "Updating node " << heap[i].node << " (" << newKey << ")";
     if(heap[i].key != newKey) {
       heap[i].key = newKey;
@@ -236,7 +252,9 @@ public:
    * Removes all elements from the heap
    */
   void clear() {
-    for (size_t i = 1; i<=size; ++i)
+    assert(heap.size()>=1);
+
+    for (size_t i=1; i<=size; ++i)
       heap[i].node->*index = 0;  // Invalidates Node*
     size = 0;
   }
@@ -249,12 +267,16 @@ public:
    * \brief Checks if the heap is empty
    */
   bool empty() {
+    assert(heap.size()>=1);
+
     return size==0;
   }
   /**
    * \brief Checks if a node is in the heap
    */
   bool contains(NodeType &n) {
+    assert(heap.size()>=1);
+
     return n.*index!=0;
   }
 
@@ -285,12 +307,14 @@ private:
   // Internal operations
   // ===================
   void percolateUp(size_t hole, _Element e) {
+    assert(heap.size()>=1);
+
     if (size==0)
       return;
 
-    for (; hole > 1 && e.key < heap[hole / 2].key; hole /= 2) {
+    for (; hole>1 && e<heap[hole/2]; hole/=2) {
       stats.percolates++;
-      heap[hole] = heap[hole / 2];
+      heap[hole] = heap[hole/2];
       heap[hole].node->*index = hole;
     }
     heap[hole] = e;
@@ -298,16 +322,18 @@ private:
   }
 
   void percolateDown(size_t hole, _Element e) {
+    assert(heap.size()>=1);
+
     if (size==0)
       return;
 
-    for(size_t child; 2 * hole <= size; hole = child) {
+    for(size_t child; 2*hole <= size; hole=child) {
       child = 2*hole;
 
-      if (child!=size && heap[child+1].key < heap[child].key)
+      if (child!=size && heap[child+1]<heap[child])
         child++;
 
-      if (heap[child].key < e.key) {
+      if (heap[child]<e) {
         stats.percolates++;
         heap[hole] = heap[child];
         heap[hole].node->*index = hole;
@@ -323,7 +349,7 @@ private:
     if (size==0)
       return;
 
-    if (hole > 1 && heap[hole / 2].key > e.key)
+    if (hole>1 && heap[hole/2]>e)
       percolateUp(hole, e);
     else
       percolateDown(hole, e);

@@ -39,17 +39,20 @@ typedef size_t IndexType;
  * \param *index:   Node member that holds the index for this Queue.
  * \param KeyType:  Type to use for comparisons.
  * \param keySize:  Number of comparisons ('1+tie breaks').
+ * \param MIN_QUEUE: Whether lower key is prefered or not.
  */
 template<
   typename   NodeType,
   IndexType (NodeType::*index),
   typename   KeyType,
-  int        keySize=1
+  int        keySize=1,
+  bool       MIN_QUEUE=true
 >
 class IndexedQueue : public Queue<
                               NodeType,  // Type of Node used.
                               KeyType,   // Type of the Key to use.
-                              keySize    // Size of the Key to use.
+                              keySize,   // Size of the Key to use.
+                              MIN_QUEUE  // Queue ordering.
                             > {
 
 public:
@@ -66,13 +69,13 @@ public:
   virtual void updatei(size_t elementIndex, const _Key newKey) = 0;
 
   inline
-  void update(NodeType &n, const _Key newKey) {
+  void update(NodeType& n, const _Key newKey) {
     updatei(n.*index, newKey);
   }
 
-  virtual void upsert(NodeType &n, const _Key newKey) = 0;
+  virtual void upsert(NodeType& n, const _Key newKey) = 0;
 
-  virtual void remove(NodeType &n) = 0;
+  virtual void remove(NodeType& n) = 0;
 };
 
 }

@@ -100,13 +100,13 @@ public:
   /** Ensures Node values are updated up to this search iteration */
   inline void updateNode(_Node &node);
   /** Computes the heuristic value from a State to the goal State */
-  inline int computeHeuristic(const MDPState &origin);
+  inline int computeHeuristic(const MDPState& origin);
 
 
   // Configuration
   // =============
-  void setStart(StateID startID);
-  void setGoal(StateID goalID);
+  void setStart(const StateID& startID);
+  void setGoal(const StateID& goalID);
 
 
 
@@ -114,22 +114,13 @@ public:
   // ====================
 
   /** Inserts or Updates (Upserts) a node in the open list */
-  void upsertOpen(_Node *node);
+  void upsertOpen(_Node& node);
 
 
   /** UNSAFE: inserts a node in open, No questions asked */
-  void insertOpen_(_Node *node, _Key key);
+  void insertOpen_(_Node& node, const _Key& key);
   /** UNSAFE: updates a node in open, No questions asked */
-  void updateOpen_(_Node *node, _Key key);
-
-  /** gets the best node on the open 'list' */
-  _Node* popOpen();
-
-  /** Checks wheter the open list is empty */
-  bool openEmpty();
-
-  /** Clears the open list */
-  void openClear();
+  void updateOpen_(_Node& node, const _Key& key);
 
 
 
@@ -137,18 +128,18 @@ public:
   // =================
 
   /** Get an updated node */
-  _Node& getNode(StateID id) {
+  _Node& getNode(const StateID id) {
   }
   /** Get a node without updating h (having h=0 if it's new) */
-  _Node& getNode0(StateID id) {
+  _Node& getNode0(const StateID id) {
   }
 
   /** Get an updated node */
-  _Node* getNode(MDPState *mdpState) {
+  _Node* getNode(MDPState& mdpState) {
   }
 
   /** UNSAFE: Get an updated node */
-  _Node* getNode_(StateID id) {
+  _Node* getNode_(const StateID id) {
   }
 
   /** Gets the updated starting node */

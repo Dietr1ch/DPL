@@ -17,9 +17,26 @@ using namespace DPL;
 
 
 void signalHandler(int s) {
-  cout << "caught signal " << s << ". Terminating" << endl;
+  // Flush streams
+  cout << endl;
+  cout.flush();
+  std::cerr << endl;
+  std::cerr.flush();
 
-  exit(1);
+  cout << endl;
+  cout << "Caught signal " << s << ". Terminating" << endl;
+
+  // Print Stack Trace
+  cout << "--- Stack Trace ---" << endl;
+#if defined(__clang__)
+  cout << "   Clang probably still doesn't support Stack Traces on EasyLogging++ :c" << endl;
+#elif defined(__GNUC__) || defined(__GNUG__)
+#endif
+  el::base::debug::StackTrace();
+  cout << "-------------------" << endl;
+
+  cout << endl;
+  exit(s);
 }
 
 
@@ -29,6 +46,13 @@ void init(int argc, char* argv[]) {
 #else
   cout << "Starting on Debug Mode" << endl;
 #endif
+#if defined(__clang__)
+  cout << "Compiled with Clang" << endl;
+#elif defined(__GNUC__) || defined(__GNUG__)
+  cout << "Compiled with GCC" << endl;
+#endif
+
+  cout << endl;
   signal(SIGABRT, &signalHandler);
   START_EASYLOGGINGPP(argc, argv);
 
@@ -81,7 +105,7 @@ void test_loopLogs(){
 
 void print(optional<AStarSpace<>::_Open::Element> e) {
   if(e)
-    log_dst << "Top node: " << *e->node << " (" << e->key << ")";
+    log_dst << "Top node: " << (*e).node << " (" << (*e).key << ")";
 }
 
 
@@ -164,7 +188,7 @@ void test_queue() {
   heap.insert(n2, k2);
   print(heap.peek());
 
-  auto a = heap._peek().node;
+  auto a = heap._peek();
 
   // Update node a (increase value)
   k1[0]= k2[0].c()*2;
@@ -172,7 +196,7 @@ void test_queue() {
   heap.update(n1, k1);
   print(heap.peek());
 
-  auto b = heap._peek().node;
+  auto b = heap._peek();
 
   if(a!=b)
     log_dst << "Queue reordered elements";
