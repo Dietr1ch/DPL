@@ -30,11 +30,6 @@ typedef int32_t CostNumericType;
 // Overflow detection
 // ------------------
 /**
- * GCC5 and Clang 3.4 offer overflow detection builtins, so the above
- *   discussion becomes irrelevant.
- */
-#define CAP_VALUES 1
-/**
  * Simple: Reaching max value is not considered an overflow.
  * Not Simple: Reaching max value is considered an overflow.
  */
@@ -72,7 +67,8 @@ typedef int32_t CostNumericType;
  *   operation.
  */
 template<
-  typename CostType=CostNumericType
+  typename CostType=CostNumericType,
+  bool CAP_VALUES=true
 >
 class _Cost {
 
@@ -97,49 +93,53 @@ public:
 
 
   CostType operator +(const _Cost& v) const {
-#if CAP_VALUES
-    CostType r;
-    if (__add_overflow(C, v.C, &r) || infty_check(r))
-      return error_infinity(v);
-    return r;
-#else
-    return C+v.C;
-#endif
+    if(CAP_VALUES) {
+      CostType r;
+      if (__add_overflow(C, v.C, &r) || infty_check(r))
+        return error_infinity(v);
+      return r;
+    }
+    else {
+      return C+v.C;
+    }
   }
 
   CostType operator +=(const _Cost& v) {
-#if CAP_VALUES
-    CostType r;
-    if (__add_overflow(C, v.C, &r) || infty_check(r))
-      return C = error_infinity(v);
-    return C = r;
-#else
-    C += v.C;
-    return C;
-#endif
+    if(CAP_VALUES) {
+      CostType r;
+      if (__add_overflow(C, v.C, &r) || infty_check(r))
+        return C = error_infinity(v);
+      return C = r;
+    }
+    else {
+      C += v.C;
+      return C;
+    }
   }
 
   CostType operator *(const _Cost& v) const {
-#if CAP_VALUES
-    CostType r;
-    if (__mul_overflow(C, v.C, &r) || infty_check(r))
-      return error_infinity(v);
-    return r;
-#else
-    return C*v.C;
-#endif
+    if(CAP_VALUES) {
+      CostType r;
+      if (__mul_overflow(C, v.C, &r) || infty_check(r))
+        return error_infinity(v);
+      return r;
+    }
+    else {
+      return C*v.C;
+    }
   }
 
   CostType operator *=(const _Cost& v) {
-#if CAP_VALUES
-    CostType r;
-    if ( __mul_overflow(C, v.C, &r) || infty_check(r))
-      return C = error_infinity(v);
-    return C = r;
-#else
-    C *= v.C;
-    return C;
-#endif
+    if(CAP_VALUES) {
+      CostType r;
+      if ( __mul_overflow(C, v.C, &r) || infty_check(r))
+        return C = error_infinity(v);
+      return C = r;
+    }
+    else {
+      C *= v.C;
+      return C;
+    }
   }
 
 
