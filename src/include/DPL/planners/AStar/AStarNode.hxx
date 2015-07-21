@@ -31,10 +31,11 @@ public:
 
 public:
 
-  AStarNode(StateID stateID, Cost g=Cost::infinity, Heuristic h=0) : Node<KeyType, keySize>(stateID) {
-    _g = g;
-    _h = h;
-  }
+  AStarNode(StateID stateID, Cost g=Cost::infinity, Heuristic h=0)
+    : Node<KeyType, keySize>(stateID),
+      _g(g),
+      _h(h)
+    {}
   virtual ~AStarNode() {
   }
 

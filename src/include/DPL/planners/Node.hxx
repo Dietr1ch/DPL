@@ -2,6 +2,8 @@
 
 // Includes
 // ========
+// C
+#include <cassert>
 // DPL
 #include <DPL/environments/Cost.hxx>
 #include <DPL/environments/StateID.hxx>
@@ -49,7 +51,9 @@ public:
 
   // Constructor
   // ===========
-  Node(const StateID stateID) : id(stateID) {}
+  Node(const StateID stateID) : id(stateID) {
+    assert(stateID.valid());
+  }
 
   virtual ~Node() {}
 

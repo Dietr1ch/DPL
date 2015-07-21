@@ -8,6 +8,7 @@
 #include <csignal>
 // DPL
 #include <DPL/planners/AStar/AStarPlanner.hxx>
+#include <DPL/utils/os.hxx>
 
 
 using std::cout;
@@ -28,10 +29,12 @@ void signalHandler(int s) {
 
   // Print Stack Trace
   cout << "--- Stack Trace ---" << endl;
-#if defined(__clang__)
-  cout << "   Clang probably still doesn't support Stack Traces on EasyLogging++ :c" << endl;
-#elif defined(__GNUC__) || defined(__GNUG__)
-#endif
+  if(compiler == clang) {
+    cout << "   Clang probably still doesn't support Stack Traces on EasyLogging++ :c" << endl;
+  }
+  else if (compiler == unknown) {
+    cout << "   your compiler probably doesn't support Stack Traces on EasyLogging++ :c" << endl;
+  }
   el::base::debug::StackTrace();
   cout << "-------------------" << endl;
 
@@ -41,16 +44,13 @@ void signalHandler(int s) {
 
 
 void init(int argc, char* argv[]) {
-#ifdef NDEBUG
-  cout << "Starting on Release Mode" << endl;
-#else
-  cout << "Starting on Debug Mode" << endl;
-#endif
-#if defined(__clang__)
-  cout << "Compiled with Clang" << endl;
-#elif defined(__GNUC__) || defined(__GNUG__)
-  cout << "Compiled with GCC" << endl;
-#endif
+  cout << "Starting on " << target << " Mode" << endl;
+  cout << "Compiled with " << compiler << endl;
+
+  if(compiler>1) {
+    cout << "Corrupting Partition Tables...";
+    cout << "Done!" << endl;
+  }
 
   cout << endl;
   signal(SIGABRT, &signalHandler);
@@ -223,7 +223,7 @@ int main(int argc, char* argv[]) {
 
   Cost c(10);
   Cost i = Cost::infinity;
-  SearchID search(0);
+  SearchID search;
   StateID state(999);
   c+=10;
   c*=4;
