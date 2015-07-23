@@ -18,6 +18,10 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
 
 include_directories(src/include)
 
+add_library(DPL SHARED
+  src/environments/Nav2D/Nav2D.cxx
+)
+
 set(DPL_INCLUDE_DIR "${CMAKE_INSTALL_PREFIX}/include")
 set(DPL_LIB_DIR "${CMAKE_INSTALL_PREFIX}/lib")
 
@@ -42,7 +46,9 @@ DESTINATION share/DPL/)
 
 install(DIRECTORY src/include/DPL DESTINATION include
         FILES_MATCHING PATTERN "*.hxx")
-# install(TARGETS DPL
-#         LIBRARY DESTINATION lib)
 
 add_executable(benchmark src/benchmark.cxx)
+target_link_libraries(benchmark DPL)
+
+add_executable(dpl_test src/test/test.cxx)
+target_link_libraries(dpl_test DPL)

@@ -19,18 +19,23 @@ namespace DPL {
  * \param OpenType:            Queue to rank the 'Open List'.
  */
 template<
-  typename    KeyType=Cost,
-  KeySize     keySize=1,
-  size_t stateArgumentCount=1,
-  typename    OpenType=VectorQueue<AStarNode<KeyType,keySize>, &AStarNode<KeyType,keySize>::indexOpen, KeyType, keySize>
+  typename  KeyType=Cost,
+  int       keySize=1,
+  size_t    stateArgumentCount=1,
+  typename  OpenType=VectorQueue<
+                                 AStarNode<Key<KeyType,keySize>>,
+                                 &AStarNode<Key<KeyType, keySize>>::indexOpen,
+                                 Key<KeyType,keySize>
+                                >
 >
 class AStarPlanner : public Planner {
 
 
-  typedef AStarNode<KeyType, keySize> _Node;
-  typedef AStarSpace<KeyType, keySize, stateArgumentCount, OpenType> _Space;
-  typedef DiscreteEnvironment<stateArgumentCount> _Env;
   typedef Key<KeyType, keySize> _Key;
+  typedef AStarNode<_Key> _Node;
+  typedef AStarSpace<_Key, stateArgumentCount, OpenType> _Space;
+  typedef DiscreteEnvironment<stateArgumentCount> _Env;
+
   /**
    * \brief The Open 'list' ranks the Nodes on the fringe.
    *
@@ -39,12 +44,12 @@ class AStarPlanner : public Planner {
   typedef OpenType _Open;
 
   static_assert(is_base_of<
-                     IndexedQueue<_Node, &_Node::indexOpen, KeyType, keySize>,
+                     IndexedQueue<_Node, &_Node::indexOpen, _Key>,
                      OpenType
                 >::value,
                 "OpenType must derive from IndexedQueue");
 
-  typedef void (*reachingFunction) (const _Node &node, const NodeStub &nS);
+  typedef void (*reachingFunction) (const _Node& node, const NodeStub& nS);
 
 protected:
   _Space space;
@@ -67,7 +72,7 @@ protected:
 
 
 public:
-  AStarPlanner(DiscreteEnvironment<> *environment);
+  AStarPlanner(_Env* environment);
   ~AStarPlanner();
 
 
@@ -78,7 +83,7 @@ protected:
    *
    * An expansion (forward) 'reaches' all the neighbors
    */
-  inline void updateSuccessors(_Node &node);
+  inline void updateSuccessors(_Node& node);
 
   /**
    * \brief Reach Node forward recording the improvement.
@@ -87,15 +92,18 @@ protected:
    *   the neighborStub in a better way than before, recording the improvement
    *   (if any)
    */
-  inline void  reachSuccessor (_Node &node, const NodeStub &nS);
+  inline void  reachSuccessor(_Node& node, const NodeStub& nS);
 
 
   // DPL API
   // ========
 
 public:
-  optional<Solution> plan();
-  optional<Solution> plan(Seconds givenTime);
+  optional<Solution> plan() {
+    optional<Solution> ret;
+
+    return ret;
+  }
 
   int set_start(StateID startID);
   int set_goal(StateID goalID);

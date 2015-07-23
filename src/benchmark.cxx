@@ -8,6 +8,7 @@
 #include <csignal>
 // DPL
 #include <DPL/planners/AStar/AStarPlanner.hxx>
+#include <DPL/environments/Nav2D/Nav2D.hxx>
 #include <DPL/utils/os.hxx>
 
 
@@ -118,6 +119,11 @@ public:
   FakeEnv() {}
   ~FakeEnv() {}
 
+  StateID getID(Arguments args){
+    _ignore(args);
+    return StateID();
+  }
+
   bool loadFile(const string file) {
     _ignore(file);
     return false;
@@ -169,6 +175,8 @@ public:
 
 void test_queue() {
 
+  Nav2D n;
+
   FakeEnv env;
   AStarSpace<> space(env);
 
@@ -179,8 +187,8 @@ void test_queue() {
 
   log_dst << "OpenQueue used: " << heap;
 
-  AStarNode<>::_Key k1;
-  AStarNode<>::_Key k2;
+  AStarNode<>::Key k1;
+  AStarNode<>::Key k2;
   k2[0]+= 20;
   k2[1]=80;
   heap.insert(n1, k1);

@@ -4,6 +4,8 @@
 // ========
 // Standard Library
 #include <vector>
+#include <future>
+#include <chrono>
 #include <experimental/optional>
 // DPL
 #include <DPL/environments/StateID.hxx>
@@ -30,6 +32,13 @@ using std::shared_ptr;
 
 using std::is_base_of;
 using std::exception;
+
+using std::chrono::seconds;
+using std::chrono::milliseconds;
+using namespace std::chrono_literals;
+
+using std::future;
+using std::future_status;
 
 
 
@@ -59,7 +68,6 @@ struct Solution {
 typedef unsigned int Seed;  // Machine dependant, not 'uint'
 typedef double Probability;
 typedef double Percentage;
-typedef double Seconds;
 
 
 }

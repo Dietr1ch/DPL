@@ -38,36 +38,42 @@ typedef el::base::type::ostream_t OutStream;
 #define str_env "environment"
 #define str_inf "information"
 #define str_mem "memory"
+#define str_tst "test"
 
 el::Logger* logger_alg = el::Loggers::getLogger(str_alg);
 el::Logger* logger_dst = el::Loggers::getLogger(str_dst);
 el::Logger* logger_env = el::Loggers::getLogger(str_env);
 el::Logger* logger_inf = el::Loggers::getLogger(str_inf);
 el::Logger* logger_mem = el::Loggers::getLogger(str_mem);
+el::Logger* logger_tst = el::Loggers::getLogger(str_tst);
 
 #define dbg_alg DCLOG(DEBUG, str_alg)
 #define dbg_dst DCLOG(DEBUG, str_dst)
 #define dbg_env DCLOG(DEBUG, str_env)
 #define dbg_inf DCLOG(DEBUG, str_inf)
 #define dbg_mem DCLOG(DEBUG, str_mem)
+#define dbg_tst DCLOG(DEBUG, str_tst)
 
 #define log_alg DCLOG(INFO, str_alg)
 #define log_dst DCLOG(INFO, str_dst)
 #define log_env DCLOG(INFO, str_env)
 #define log_inf CLOG(INFO,  str_inf)
 #define log_mem DCLOG(INFO, str_mem)
+#define log_tst DCLOG(INFO, str_tst)
 
 #define warn_alg DCLOG(WARNING, str_alg)
 #define warn_dst DCLOG(WARNING, str_dst)
 #define warn_env DCLOG(WARNING, str_env)
 #define warn_inf CLOG(WARNING,  str_inf)
 #define warn_mem DCLOG(WARNING, str_mem)
+#define warn_tst DCLOG(WARNING, str_tst)
 
 #define err_alg DCLOG(ERROR, str_alg)
 #define err_dst DCLOG(ERROR, str_dst)
 #define err_env DCLOG(ERROR, str_env)
 #define err_inf CLOG(ERROR,  str_inf)
 #define err_mem DCLOG(ERROR, str_mem)
+#define err_tst DCLOG(ERROR, str_tst)
 
 
 

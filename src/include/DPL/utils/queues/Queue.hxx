@@ -28,8 +28,7 @@ namespace DPL {
  */
 template<
   typename NodeType,
-  typename KeyType,
-  int      keySize=1,
+  typename K,
   bool     MIN_QUEUE=true
 >
 class Queue {
@@ -38,14 +37,8 @@ public:
   /**
    * Ensure that templating matches the expected types
    */
-  static_assert(is_base_of<Node<KeyType, keySize>, NodeType>::value, "NodeType must derive from Node<K,n>");
+  static_assert(is_base_of<Node<K>, NodeType>::value, "NodeType must derive from Node<K,n>");
 
-  /**
-   * \brief Type of Key used.
-   *
-   * The Key Type is the matching Key<KeyType, keySize>.
-   */
-  typedef Key<KeyType, keySize> _Key;
 
   /**
    * \brief An element of the heap, a pair (Node, Key).
@@ -61,11 +54,11 @@ public:
    */
   struct Element {
     NodeType* node;
-    _Key      key;
+    K         key;
 
     Element() : node(nullptr) {}
     Element(NodeType& n) : node(&n) {}
-    Element(NodeType& n, _Key k) : node(&n),key(k) {}
+    Element(NodeType& n, K k) : node(&n),key(k) {}
     Element(const Element& e) : node(e.node),key(e.key) {}
 
     // Comparison Operators
@@ -83,7 +76,7 @@ public:
   // ==========
   virtual optional<Element> peek() const = 0;
   virtual optional<Element> pop() = 0;
-  virtual void insert(NodeType& n, const _Key k) = 0;
+  virtual void insert(NodeType& n, const K k) = 0;
 
   virtual void clear() = 0;
 
@@ -99,7 +92,7 @@ public:
     return pop();
   }
   inline
-  void push(NodeType& n, const _Key k) {
+  void push(NodeType& n, const K k) {
     insert(n,k);
   }
 

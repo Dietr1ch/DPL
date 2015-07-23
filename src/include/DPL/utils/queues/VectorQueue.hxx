@@ -24,15 +24,13 @@ namespace DPL {
 template<
   typename   NodeType,
   IndexType (NodeType::*index),
-  typename   KeyType,
-  int        keySize=1,
+  typename   K=Key<>,
   bool       MIN_QUEUE=true
 >
 class VectorQueue : public IndexedQueue<
                              NodeType,
                              index,
-                             KeyType,
-                             keySize,
+                             K,
                              MIN_QUEUE
                            > {
 
@@ -40,9 +38,8 @@ public:
 
   // Type aliases
   // ============
-  typedef IndexedQueue<NodeType, index, KeyType, keySize> _IndexedQueue;
+  typedef IndexedQueue<NodeType, index, K> _IndexedQueue;
   typedef typename _IndexedQueue::Element _Element;
-  typedef typename _IndexedQueue::_Key _Key;
 
 
 private:
@@ -145,7 +142,7 @@ public:
    * \param n: Node to insert.
    * \param k: Key for the new Node.
    */
-  void insert(NodeType &n, const _Key k) {
+  void insert(NodeType &n, const K k) {
     if (n.*index != 0) {
       err_dst << "Node is already in heap\n";
       throw new exception();
@@ -162,7 +159,7 @@ public:
    * \param k: Key for the new Node.
    */
   inline
-  void _insert(NodeType &n, const _Key k) {
+  void _insert(NodeType &n, const K k) {
     assert(heap.size()>=1);
 
     dbg_dst << "Inserting node " << n << " (" << k << ")";
@@ -208,7 +205,7 @@ public:
    * \param i:      Index of an existing Node.
    * \param newKey: New Key for the Node.
    */
-  void updatei(size_t i, const _Key newKey) {
+  void updatei(size_t i, const K newKey) {
     if (i==0) {
       err_dst << "Node is not in heap";
       throw new exception();
@@ -225,7 +222,7 @@ public:
    * \param newKey: New Key for the Node.
    */
   inline
-  void _updatei(size_t i, const _Key newKey) {
+  void _updatei(size_t i, const K newKey) {
     assert(heap.size()>=1);
 
     dbg_dst << "Updating node " << heap[i].node << " (" << newKey << ")";
@@ -238,7 +235,7 @@ public:
 
   // Upsert
   // ------
-  void upsert(NodeType &n, const _Key newKey) {
+  void upsert(NodeType &n, const K newKey) {
     if(n.*index==0)
       insert(n, newKey);
     else

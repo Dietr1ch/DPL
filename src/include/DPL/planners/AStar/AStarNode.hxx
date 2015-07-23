@@ -15,10 +15,12 @@ namespace DPL {
  * \brief A* Search Node.
  */
 template<
-  typename KeyType = Cost,
-  KeySize  keySize = 1
+  typename K=Key<>
 >
-class AStarNode : public Node<KeyType, keySize> {
+class AStarNode : public Node<K> {
+
+public:
+  typedef K Key;
 
 protected:
   Cost      _g;
@@ -32,7 +34,7 @@ public:
 public:
 
   AStarNode(StateID stateID, Cost g=Cost::infinity, Heuristic h=0)
-    : Node<KeyType, keySize>(stateID),
+    : Node<K>(stateID),
       _g(g),
       _h(h)
     {}

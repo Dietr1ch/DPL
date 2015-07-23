@@ -20,20 +20,16 @@ namespace DPL {
  * Nodes are containers for problem-specific States that also hold
  *   planner-specific search information.
  *
- * \param keyType: type to use for the key values.
- * \param keySize: type to use for the key values.
+ * \param K: type to use for the key.
  *
  * \note Known as AbstractSearchState on the SBPL.
  */
 template<
-  typename KeyType=Cost,
-  KeySize keySize=1
+  typename K
 >
 class Node {
 
 public:
-  typedef Key<KeyType, keySize> _Key;
-
   /**
    * StateID
    */

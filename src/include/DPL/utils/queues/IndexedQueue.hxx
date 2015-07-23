@@ -25,6 +25,10 @@ typedef size_t IndexType;
  *   us to give the member name to the template, so that the queue is able to use
  *   'Node::index' to hold the index.
  *
+ *
+ *
+ *  * https://dl.acm.org/citation.cfm?id=2523707
+ *
  * REVIEW: This may have a drawback, as multiple classes may be generated when using
  *           multiple queues on the same type (Node) instead of only one that gets an
  *           index to an array of indices (holding indices to multiple queues).
@@ -35,6 +39,19 @@ typedef size_t IndexType;
  *           code, then even without it will probably remain over-occupied.
  *         Don't remove this until proper benchmarking is done.
  *
+ *
+ * [EdelkampEK12] Compares multiple queues, suggesting this order for new Indexed Queues:
+ *
+ *   * binary heap  (Implemented on VectorQueue)
+ *   * pairing heap
+ *   * weak queue
+ *   * Fibonacci heap
+ *   * weak heap
+ *   * rank−relaxed weak queue
+ *   * rank−relaxed weak heap
+ *
+ * [EdelkampEK12]:https://dl.acm.org/citation.cfm?id=2523707
+ *
  * \param NodeType: Node to be hold on the Queue. Should extend DPL::Node
  * \param *index:   Node member that holds the index for this Queue.
  * \param KeyType:  Type to use for comparisons.
@@ -44,14 +61,12 @@ typedef size_t IndexType;
 template<
   typename   NodeType,
   IndexType (NodeType::*index),
-  typename   KeyType,
-  int        keySize=1,
+  typename   K,
   bool       MIN_QUEUE=true
 >
 class IndexedQueue : public Queue<
                               NodeType,  // Type of Node used.
-                              KeyType,   // Type of the Key to use.
-                              keySize,   // Size of the Key to use.
+                              K,   // Type of the Key to use.
                               MIN_QUEUE  // Queue ordering.
                             > {
 
@@ -59,21 +74,20 @@ public:
 
   // Type aliases
   // ============
-  typedef Queue<NodeType, KeyType, keySize> _Queue;
+  typedef Queue<NodeType, K> _Queue;
   typedef typename _Queue::Element _Element;
-  typedef typename _Queue::_Key _Key;
 
 
   // Indexed Queue Operations
   // =======================
-  virtual void updatei(size_t elementIndex, const _Key newKey) = 0;
+  virtual void updatei(size_t elementIndex, const K newKey) = 0;
 
   inline
-  void update(NodeType& n, const _Key newKey) {
+  void update(NodeType& n, const K newKey) {
     updatei(n.*index, newKey);
   }
 
-  virtual void upsert(NodeType& n, const _Key newKey) = 0;
+  virtual void upsert(NodeType& n, const K newKey) = 0;
 
   virtual void remove(NodeType& n) = 0;
 };

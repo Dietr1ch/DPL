@@ -2,6 +2,9 @@
 
 // Includes
 // ========
+// C++
+#include <future>
+#include <chrono>
 // DPL
 #include <DPL/utils/types.hxx>
 #include <DPL/planners/Node.hxx>
@@ -38,11 +41,16 @@ class Planner {
   /**
    * \brief Solves given problem eventually or proves unreachability.
    */
-  optional<Solution> plan();
+  virtual optional<Solution> plan() = 0;
+
   /**
    * \brief Try to solve the given problem under the given time bound.
+   *
+   * REVIEW: Use future<> and wait_for and simply call plan().
+   *           Currently the problem is that it requires calling a
+   *           static (non-member) function.
    */
-  optional<Solution> plan(Seconds timeGiven);
+  virtual optional<Solution> plan(const seconds timeGiven) = 0;
 
 };
 

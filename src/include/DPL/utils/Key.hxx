@@ -22,8 +22,8 @@ typedef int KeySize;
  * \param keySize: Number of comparisons ('1+tie breaks')
  */
 template<
-  typename KeyType,
-  KeySize  keySize
+  typename KeyType=Cost,
+  KeySize  keySize=1
 >
 class Key {
   bool changed = true;

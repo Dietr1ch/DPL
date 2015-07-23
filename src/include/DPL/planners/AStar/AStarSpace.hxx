@@ -25,25 +25,23 @@ namespace DPL {
 /**
  * \brief A* Search Space
  *
- * \param KeyType:             Type to use for comparisons.
- * \param keySize:             Number of comparisons ('1+tie breaks').
+ * \param K:                   Type to use for comparisons.
  * \param stateArgumentCount:  Number of arguments that States have (2D grid -> 2).
  * \param OpenType:            Queue to rank the 'Open List'.
  */
 template<
-  typename    KeyType=Cost,
-  KeySize     keySize=1,
+  typename    K=Key<>,
   size_t stateArgumentCount=1,
-  typename    OpenType=VectorQueue<AStarNode<KeyType,keySize>, &AStarNode<KeyType,keySize>::indexOpen, KeyType, keySize>
+  typename    OpenType=VectorQueue<AStarNode<K>, &AStarNode<K>::indexOpen, K>
 >
-class AStarSpace : public Space<AStarNode<KeyType, keySize>> {
+class AStarSpace : public Space<AStarNode<K>> {
 
 
 public:
 
-  typedef AStarNode<KeyType, keySize> _Node;
+  typedef K _Key;
+  typedef AStarNode<_Key> _Node;
   typedef DiscreteEnvironment<stateArgumentCount> _Env;
-  typedef Key<KeyType, keySize> _Key;
 
   /**
    * \brief The Open 'list' ranks the Nodes on the fringe.
@@ -53,7 +51,7 @@ public:
   typedef OpenType _Open;
 
   static_assert(is_base_of<
-                     IndexedQueue<_Node, &_Node::indexOpen, KeyType, keySize>,
+                     IndexedQueue<_Node, &_Node::indexOpen, _Key>,
                      OpenType
                 >::value,
                 "OpenType must derive from IndexedQueue");
@@ -129,17 +127,21 @@ public:
 
   /** Get an updated node */
   _Node& getNode(const StateID id) {
+    _ignore(id);
   }
   /** Get a node without updating h (having h=0 if it's new) */
   _Node& getNode0(const StateID id) {
+    _ignore(id);
   }
 
   /** Get an updated node */
   _Node* getNode(MDPState& mdpState) {
+    _ignore(mdpState);
   }
 
   /** UNSAFE: Get an updated node */
   _Node* getNode_(const StateID id) {
+    _ignore(id);
   }
 
   /** Gets the updated starting node */

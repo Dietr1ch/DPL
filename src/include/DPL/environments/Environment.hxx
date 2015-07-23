@@ -66,7 +66,16 @@ template <
 >
 class DiscreteEnvironment {
 
-  typedef array<size_t, StateArgumentCount> StateArguments;
+public:
+  typedef array<size_t, StateArgumentCount> Arguments;
+  struct StateEntry {
+    StateID id;
+    Arguments args;
+  };
+
+
+protected:
+
   /**
    * \brief mapping from hashentry stateID (used in environment to contain
    *        the coordinates of a state, say x,y or x,y,theta)
@@ -79,7 +88,8 @@ class DiscreteEnvironment {
    * The value of -1 means that no search state has been created yet for this
    * hashentry
    */
-  vector<StateArguments> StateID2IndexMapping;
+  vector<StateEntry> stateEntries;
+  virtual StateID getID(Arguments args) = 0;
 
   // Initialization
   // ==============
@@ -150,11 +160,6 @@ public:
   // Statistics
   // ==========
   virtual uint stats_statesCreated(const StateID id) = 0;
-
-
-  // Print
-  // =====
-  virtual string toString(const StateID state) = 0;
 
 
   // Benchmarking
@@ -260,9 +265,9 @@ public:
       optional<Cost> c = checkArc(s, t);
       if(!c) {
         err_env << "Path is not continuous. "
-                << "(" << s << ": " << toString(s) << ")"
+                << "(" << s << ": " << s << ")"
                 << " -/-> "
-                << "(" << t << ": " << toString(t) << ")"
+                << "(" << t << ": " << t << ")"
                 << endl;
         return ret;
       }
